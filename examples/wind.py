@@ -1,19 +1,13 @@
 import numpy as np
 import torch as th
 import sphaera as sph
-import pyvista as pv
 import xarray as xr
 
 from sphaera.core3d.gridsys.regular3 import RegularGrid
 from sphaera.core3d.vec3 import mult, div, add, normalize, norm
+from sphaera.plot.plot3d import plot_scalar, plot_vector
 
 wind = xr.open_dataset('examples/wind.nc')
-
-sphere = pv.Sphere(
-    direction=(0, 0, 1),
-    start_theta=0, end_theta=360, theta_resolution=1440,
-    start_phi=0.001, end_phi=179.999, phi_resolution=721,
-    radius=6371000.0)
 
 
 def cast(data):
@@ -24,31 +18,6 @@ def cast(data):
 def strip(data):
     d = data.reshape(1, 1, 721, 1504, 2)
     return d[:, :, :, 32:1472, 0:1]
-
-
-def plot_scalar(varname, scl):
-    f = scl[0, 0, :, :, 0].numpy()[::-1, ::-1].T.reshape(721 * 1440, 1)
-    sphere[varname] = f
-    sphere.set_active_scalars(varname)
-    sphere.plot(cpos='xz', cmap='plasma')
-
-
-def plot_vector(varname, vec):
-    a, b, c = vec
-    a, b, c = a[0, 0, :, :, 0].numpy(), b[0, 0, :, :, 0].numpy(), c[0, 0, :, :, 0].numpy()
-    vectors = np.concatenate(
-        (
-            a[::-1, ::-1].T.reshape(721 * 1440, 1),
-            b[::-1, ::-1].T.reshape(721 * 1440, 1),
-            c[::-1, ::-1].T.reshape(721 * 1440, 1),
-        ), axis=-1
-    )
-    sphere[varname] = vectors
-    sphere.set_active_vectors(varname)
-    plt = pv.Plotter()
-    plt.add_mesh(sphere.arrows, lighting=False, scalar_bar_args={'title': "x"})
-    plt.add_mesh(sphere, color="grey", ambient=0.6, opacity=0.5, show_edges=False)
-    plt.show()
 
 
 sph.default_device = -1
