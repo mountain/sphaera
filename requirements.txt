@@ -1,0 +1,15 @@
+cached_property
+
+numpy
+scipy
+torch
+
+vtk
+pyvista
+
+netcdf4
+h5netcdf
+xarray
+
+pytest
+pytest-cov
