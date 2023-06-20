@@ -4,7 +4,7 @@ import sphaera as sph
 import xarray as xr
 
 from sphaera.core3d.gridsys.regular3 import RegularGrid
-from sphaera.core3d.vec3 import mult, div, add, normalize, norm
+from sphaera.core3d.vec3 import dot, norm, cross
 from sphaera.plot.plot3d import plot_scalar, plot_vector
 
 wind = xr.open_dataset('examples/wind.nc')
@@ -37,44 +37,23 @@ sph.use('thetaphir')
 
 u10 = cast(wind['u10'].data)
 v10 = cast(wind['v10'].data)
-u10 = th.cat((u10, u10), dim=4)
-v10 = th.cat((v10, v10), dim=4)
 wnd = (u10, v10, sph.zero)
-plot_scalar('wind velocity', strip(norm(wnd)))
+#plot_scalar('wind-velocity', strip(norm(wnd)))
 
-# vortex = sph.curl(wnd)
-# plot_scalar('length', strip(th.log(norm(vortex))))
+r_0 = sph.thetaphir.r[0][:, :, :, :, 0:1]
+r_1 = sph.thetaphir.r[1][:, :, :, :, 0:1]
+r_2 = sph.thetaphir.r[2][:, :, :, :, 0:1]
+r = (r_0, r_1, r_2)
 
-plot_scalar('theta', strip(sph.theta))
-plot_scalar('phi', strip(sph.phi))
-plot_scalar('Theta', strip(norm(sph.thetaphir.theta)))
-plot_scalar('Phi', strip(norm(sph.thetaphir.phi)))
+spectrum = th.zeros_like(u10)
+for ix in range(1504):
+    print(ix)
+    for jx in range(721):
+        axis = r_0[:, :, jx, ix, 0:1], r_1[:, :, jx, ix, 0:1], r_2[:, :, jx, ix, 0:1]
+        frame = cross(r, axis)
+        val = th.sum(dot(frame, wnd))
+        spectrum[0, 0, jx, ix, 0] = val
 
-u = mult(sph.thetaphir.theta, (np.sin(sph.phi), np.sin(sph.phi), np.sin(sph.phi)))
-plot_scalar('u', strip(norm(u)))
-plot_scalar('curl u', strip(norm(sph.curl(u))))
+plot_scalar('spectrum', strip(spectrum))
 
-alpha_p = np.pi / 4
-alpha_q = np.pi / 2
-
-a = np.cos(alpha_p) * np.cos(sph.phi) + np.sin(alpha_p) * (np.sin(sph.theta) * sph.zero - np.cos(sph.theta) * np.sin(sph.phi))
-b = np.cos(alpha_p) * sph.zero + np.sin(alpha_p) * (np.sin(sph.theta) * sph.one + np.cos(sph.theta) * sph.zero)
-p = add(mult(sph.thetaphir.theta, (a, a, a)), mult(sph.thetaphir.phi, (b, b, b)))
-
-a = np.cos(alpha_q) * np.cos(sph.phi) + np.sin(alpha_q) * np.sin(sph.phi) * np.cos(sph.theta)
-b = np.sin(alpha_q) * np.sin(sph.theta)
-q = add(mult(sph.thetaphir.theta, (a, a, a)), mult(sph.thetaphir.phi, (b, b, b)))
-
-plot_scalar('p', strip(norm(p)))
-plot_scalar('q', strip(norm(q)))
-
-vp = sph.curl(p)
-vq = sph.curl(q)
-
-plot_scalar('vp', strip(norm(vp)))
-plot_scalar('vq', strip(norm(vq)))
-
-print(th.sum(sph.dot(vp, vp) * sph.dV))
-print(th.sum(sph.dot(vq, vq) * sph.dV))
-print(th.sum(sph.dot(vp, vq) * sph.dV))
 
