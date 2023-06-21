@@ -5,7 +5,7 @@ import xarray as xr
 
 from sphaera.core3d.gridsys.regular3 import RegularGrid
 from sphaera.core3d.vec3 import dot, norm, cross
-from sphaera.plot.plot3d import plot_scalar, plot_vector
+from sphaera.plot.plot3d import plot_scalar
 
 wind = xr.open_dataset('examples/wind.nc')
 
@@ -16,7 +16,7 @@ def cast(data):
 
 
 def strip(data):
-    d = data.reshape(1, 1, 721, 1504, 2)
+    d = data.reshape(1, 1, 721, 1504, 1)
     return d[:, :, :, 32:1472, 0:1]
 
 
@@ -46,7 +46,7 @@ r_2 = sph.thetaphir.r[2][:, :, :, :, 0:1]
 r = (r_0, r_1, r_2)
 
 spectrum = th.zeros_like(u10)
-for ix in range(1504):
+for ix in range(32, 1472, 1):
     print(ix)
     for jx in range(721):
         axis = r_0[:, :, jx, ix, 0:1], r_1[:, :, jx, ix, 0:1], r_2[:, :, jx, ix, 0:1]
