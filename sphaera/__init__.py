@@ -33,13 +33,13 @@ def set_device(ix):
             if cuda_ready:
                 lanczosk2d = lanczosk2d.cuda(device=ix)
             elif mps_ready:
-                lanczosk2d = lanczosk2d.mps()
+                lanczosk2d = lanczosk2d.to(th.device("mps"))
 
         if lanczosk3d is not None:
             if cuda_ready:
                 lanczosk3d = lanczosk3d.cuda(device=ix)
             elif mps_ready:
-                lanczosk3d = lanczosk3d.mps()
+                lanczosk3d = lanczosk3d.to(th.device("mps"))
 
     if default_device == ix:
         return
@@ -88,7 +88,7 @@ def cast(element, device=-1) -> Tensor:
         if cuda_ready:
             return tensor.cuda(device=device)
         elif mps_ready:
-            return tensor.mps()
+            return tensor.to(th.device("mps"))
         else:
             return tensor
     else:

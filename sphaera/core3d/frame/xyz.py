@@ -26,7 +26,7 @@ class XYZFrame:
         if cuda_ready:
             self.grid.cuda(device=ix)
         elif mps_ready:
-            self.grid = self.grid.mps()
+            self.grid = self.grid.to(th.device("mps"))
 
     @cached_property
     def x(self) -> Tuple[Tensor, Tensor, Tensor]:
