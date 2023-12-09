@@ -39,7 +39,9 @@ with th.no_grad():
     u10 = cast(wind['u10'].data)
     v10 = cast(wind['v10'].data)
     wnd = (u10, v10, sph.zero)
-    #plot_scalar('wind-velocity', strip(norm(wnd)))
+    velocity = norm(wnd)
+    th.save(velocity, 'velocity.dat')
+    plot_scalar('wind-velocity', strip(velocity))
 
     r_0 = sph.thetaphir.r[0][:, :, :, :, 0:1]
     r_1 = sph.thetaphir.r[1][:, :, :, :, 0:1]
