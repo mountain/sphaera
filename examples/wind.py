@@ -13,7 +13,7 @@ wind = xr.open_dataset('examples/wind.nc')
 
 
 def cast(data):
-    d = data.reshape(721, 1440, dtype=np.float32)
+    d = np.array(data, dtype=np.float32).reshape(721, 1440)
     return sph.cast(np.concatenate((d[:, 1439:1407:-1], d, d[:, 0:32:1]), axis=1)).reshape(1, 1, 721, 1504, 1)
 
 
