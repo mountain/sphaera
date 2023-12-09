@@ -32,9 +32,9 @@ def set_device(ix):
             centraly = centraly.cuda(device=ix)
             centralz = centralz.cuda(device=ix)
         if mps_ready:
-            centralx = centralx.device('mps')
-            centraly = centraly.device('mps')
-            centralz = centralz.device('mps')
+            centralx = centralx.mps()
+            centraly = centraly.mps()
+            centralz = centralz.mps()
 
 
         global central5x, central5y, central5z
@@ -43,9 +43,9 @@ def set_device(ix):
             central5y = central5y.cuda(device=ix)
             central5z = central5z.cuda(device=ix)
         if mps_ready:
-            central5x = central5x.device('mps')
-            central5y = central5y.device('mps')
-            central5z = central5z.device('mps')
+            central5x = central5x.mps()
+            central5y = central5y.mps()
+            central5z = central5z.mps()
 
         global sobel3x, sobel3y, sobel3z
         if cuda_ready:
@@ -53,9 +53,9 @@ def set_device(ix):
             sobel3y = sobel3y.cuda(device=ix)
             sobel3z = sobel3z.cuda(device=ix)
         if mps_ready:
-            sobel3x = sobel3x.device('mps')
-            sobel3y = sobel3y.device('mps')
-            sobel3z = sobel3z.device('mps')
+            sobel3x = sobel3x.mps()
+            sobel3y = sobel3y.mps()
+            sobel3z = sobel3z.mps()
 
         global sobel5x, sobel5y, sobel5z
         if cuda_ready:
@@ -63,9 +63,9 @@ def set_device(ix):
             sobel5y = sobel5y.cuda(device=ix)
             sobel5z = sobel5z.cuda(device=ix)
         if mps_ready:
-            sobel5x = sobel5x.device('mps')
-            sobel5y = sobel5y.device('mps')
-            sobel5z = sobel5z.device('mps')
+            sobel5x = sobel5x.mps()
+            sobel5y = sobel5y.mps()
+            sobel5z = sobel5z.mps()
 
         global sharr3x, sharr3y, sharr3z
         if cuda_ready:
@@ -73,9 +73,9 @@ def set_device(ix):
             sharr3y = sharr3y.cuda(device=ix)
             sharr3z = sharr3z.cuda(device=ix)
         if mps_ready:
-            sobel3x = sobel3x.device('mps')
-            sharr3y = sharr3y.device('mps')
-            sharr3z = sharr3z.device('mps')
+            sobel3x = sobel3x.mps()
+            sharr3y = sharr3y.mps()
+            sharr3z = sharr3z.mps()
 
         global upwind_p2x, upwind_p2y, upwind_p2z
         if cuda_ready:
@@ -83,9 +83,9 @@ def set_device(ix):
             upwind_p2y = upwind_p2y.cuda(device=ix)
             upwind_p2z = upwind_p2z.cuda(device=ix)
         if mps_ready:
-            upwind_p2x = upwind_p2x.device('mps')
-            upwind_p2y = upwind_p2y.device('mps')
-            upwind_p2z = upwind_p2z.device('mps')
+            upwind_p2x = upwind_p2x.mps()
+            upwind_p2y = upwind_p2y.mps()
+            upwind_p2z = upwind_p2z.mps()
 
         global upwind_m2x, upwind_m2y, upwind_m2z
         if cuda_ready:
@@ -93,9 +93,9 @@ def set_device(ix):
             upwind_m2y = upwind_m2y.cuda(device=ix)
             upwind_m2z = upwind_m2z.cuda(device=ix)
         if mps_ready:
-            upwind_m2x = upwind_m2x.device('mps')
-            upwind_m2y = upwind_m2y.device('mps')
-            upwind_m2z = upwind_m2z.device('mps')
+            upwind_m2x = upwind_m2x.mps()
+            upwind_m2y = upwind_m2y.mps()
+            upwind_m2z = upwind_m2z.mps()
 
         global upwind_p3x, upwind_p3y, upwind_p3z
         if cuda_ready:
@@ -103,9 +103,9 @@ def set_device(ix):
             upwind_p3y = upwind_p3y.cuda(device=ix)
             upwind_p3z = upwind_p3z.cuda(device=ix)
         if mps_ready:
-            upwind_p3x = upwind_p3x.device('mps')
-            upwind_p3y = upwind_p3y.device('mps')
-            upwind_p3z = upwind_p3z.device('mps')
+            upwind_p3x = upwind_p3x.mps()
+            upwind_p3y = upwind_p3y.mps()
+            upwind_p3z = upwind_p3z.mps()
 
         global upwind_m3x, upwind_m3y, upwind_m3z
         if cuda_ready:
@@ -113,9 +113,9 @@ def set_device(ix):
             upwind_m3y = upwind_m3y.cuda(device=ix)
             upwind_m3z = upwind_m3z.cuda(device=ix)
         if mps_ready:
-            upwind_m3x = upwind_m3x.device('mps')
-            upwind_m3y = upwind_m3y.device('mps')
-            upwind_m3z = upwind_m3z.device('mps')
+            upwind_m3x = upwind_m3x.mps()
+            upwind_m3y = upwind_m3y.mps()
+            upwind_m3z = upwind_m3z.mps()
 
         global upwind_p4x, upwind_p4y, upwind_p4z
         if cuda_ready:
@@ -123,9 +123,9 @@ def set_device(ix):
             upwind_p4y = upwind_p4y.cuda(device=ix)
             upwind_p4z = upwind_p4z.cuda(device=ix)
         if mps_ready:
-            upwind_p4x = upwind_p4x.device('mps')
-            upwind_p4y = upwind_p4y.device('mps')
-            upwind_p4z = upwind_p4z.device('mps')
+            upwind_p4x = upwind_p4x.mps()
+            upwind_p4y = upwind_p4y.mps()
+            upwind_p4z = upwind_p4z.mps()
 
         global upwind_m4x, upwind_m4y, upwind_m4z
         if cuda_ready:
@@ -133,9 +133,9 @@ def set_device(ix):
             upwind_m4y = upwind_m4y.cuda(device=ix)
             upwind_m4z = upwind_m4z.cuda(device=ix)
         if mps_ready:
-            upwind_m4x = upwind_m4x.device('mps')
-            upwind_m4y = upwind_m4y.device('mps')
-            upwind_m4z = upwind_m4z.device('mps')
+            upwind_m4x = upwind_m4x.mps()
+            upwind_m4y = upwind_m4y.mps()
+            upwind_m4z = upwind_m4z.mps()
 
     default_device = ix
 

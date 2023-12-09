@@ -46,15 +46,15 @@ class ThetaPhiRFrame:
             self.ry = self.ry.cuda(device=ix)
             self.rz = self.rz.cuda(device=ix)
         elif mps_ready:
-            self.thx = self.thx.device('mps')
-            self.thy = self.thy.device('mps')
-            self.thz = self.thz.device('mps')
-            self.phx = self.phx.device('mps')
-            self.phy = self.phy.device('mps')
-            self.phz = self.phz.device('mps')
-            self.rx = self.rx.device('mps')
-            self.ry = self.ry.device('mps')
-            self.rz = self.rz.device('mps')
+            self.thx = self.thx.mps()
+            self.thy = self.thy.mps()
+            self.thz = self.thz.mps()
+            self.phx = self.phx.mps()
+            self.phy = self.phy.mps()
+            self.phz = self.phz.mps()
+            self.rx = self.rx.mps()
+            self.ry = self.ry.mps()
+            self.rz = self.rz.mps()
 
     @cached_property
     def phi(self) -> Tuple[Tensor, Tensor, Tensor]:
