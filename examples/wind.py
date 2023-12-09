@@ -53,7 +53,7 @@ with th.no_grad():
         print(ix)
         for jx in range(721):
             axis = r_0[:, :, jx, ix, 0:1], r_1[:, :, jx, ix, 0:1], r_2[:, :, jx, ix, 0:1]
-            signature = th.sgn(dot(r, axis))
+            signature = th.sign(dot(r, axis))
             frame = cross(r, axis)
             frame = signature * normalize(frame)
             val = th.sum(dot(frame, wnd))
