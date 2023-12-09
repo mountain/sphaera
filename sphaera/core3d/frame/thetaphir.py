@@ -8,6 +8,10 @@ from torch import Tensor
 from typing import Tuple
 
 
+mps_ready = th.backends.mps.is_available() and th.backends.mps.is_built()
+cuda_ready = th.cuda.is_available()
+
+
 class ThetaPhiRFrame:
     def __init__(self, grid):
         self.default_device = -1
@@ -30,16 +34,27 @@ class ThetaPhiRFrame:
         return self.default_device
 
     def set_device(self, ix):
-        self.thx = self.thx.cuda(device=ix)
-        self.thy = self.thy.cuda(device=ix)
-        self.thz = self.thz.cuda(device=ix)
-        self.phx = self.phx.cuda(device=ix)
-        self.phy = self.phy.cuda(device=ix)
-        self.phz = self.phz.cuda(device=ix)
-        self.rx = self.rx.cuda(device=ix)
-        self.ry = self.ry.cuda(device=ix)
-        self.rz = self.rz.cuda(device=ix)
         self.default_device = ix
+        if cuda_ready:
+            self.thx = self.thx.cuda(device=ix)
+            self.thy = self.thy.cuda(device=ix)
+            self.thz = self.thz.cuda(device=ix)
+            self.phx = self.phx.cuda(device=ix)
+            self.phy = self.phy.cuda(device=ix)
+            self.phz = self.phz.cuda(device=ix)
+            self.rx = self.rx.cuda(device=ix)
+            self.ry = self.ry.cuda(device=ix)
+            self.rz = self.rz.cuda(device=ix)
+        elif mps_ready:
+            self.thx = self.thx.device('mps')
+            self.thy = self.thy.device('mps')
+            self.thz = self.thz.device('mps')
+            self.phx = self.phx.device('mps')
+            self.phy = self.phy.device('mps')
+            self.phz = self.phz.device('mps')
+            self.rx = self.rx.device('mps')
+            self.ry = self.ry.device('mps')
+            self.rz = self.rz.device('mps')
 
     @cached_property
     def phi(self) -> Tuple[Tensor, Tensor, Tensor]:

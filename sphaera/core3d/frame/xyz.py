@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import sphaera as iza
+import torch as th
 
 from cached_property import cached_property
 from torch import Tensor
 from typing import Tuple
+
+
+mps_ready = th.backends.mps.is_available() and th.backends.mps.is_built()
+cuda_ready = th.cuda.is_available()
 
 
 class XYZFrame:
@@ -17,8 +22,11 @@ class XYZFrame:
         return self.default_device
 
     def set_device(self, ix):
-        self.grid.set_device(ix)
         self.default_device = ix
+        if cuda_ready:
+            self.grid.cuda(device=ix)
+        elif mps_ready:
+            self.grid = self.grid.device('mps')
 
     @cached_property
     def x(self) -> Tuple[Tensor, Tensor, Tensor]:

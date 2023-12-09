@@ -8,11 +8,14 @@ from typing import Tuple
 from torch import Tensor
 from torch.nn.functional import conv2d, conv3d
 
-default_device = -1
+default_device = 0
 used_modules = []
 used_environ = {}
 
 logger = logging.getLogger('sphaera')
+
+mps_ready = th.backends.mps.is_available() and th.backends.mps.is_built()
+cuda_ready = th.cuda.is_available()
 
 lanczosk2d = None
 lanczosk3d = None
@@ -25,12 +28,18 @@ def get_device():
 def set_device(ix):
     global default_device, lanczosk2d, lanczosk3d
 
-    if default_device != -1 and th.cuda.is_available():
+    if default_device != -1:
         if lanczosk2d is not None:
-            lanczosk2d = lanczosk2d.cuda(device=ix)
+            if cuda_ready:
+                lanczosk2d = lanczosk2d.cuda(device=ix)
+            elif mps_ready:
+                lanczosk2d = lanczosk2d.device('mps')
 
         if lanczosk3d is not None:
-            lanczosk3d = lanczosk3d.cuda(device=ix)
+            if cuda_ready:
+                lanczosk3d = lanczosk3d.cuda(device=ix)
+            elif mps_ready:
+                lanczosk3d = lanczosk3d.device('mps')
 
     if default_device == ix:
         return
@@ -75,8 +84,13 @@ def set_device(ix):
 def cast(element, device=-1) -> Tensor:
     element = np.array(element, dtype=np.float64)
     tensor = th.DoubleTensor(element)
-    if device != -1 and th.cuda.is_available():
-        return tensor.cuda(device=device)
+    if device != -1:
+        if cuda_ready:
+            return tensor.cuda(device=device)
+        elif mps_ready:
+            return tensor.device('mps')
+        else:
+            return tensor
     else:
         return tensor
 

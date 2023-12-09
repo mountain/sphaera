@@ -3,6 +3,8 @@ import torch as th
 import sphaera as sph
 import xarray as xr
 
+sph.set_device(0)
+
 from sphaera.core3d.gridsys.regular3 import RegularGrid
 from sphaera.core3d.vec3 import dot, norm, cross, normalize
 from sphaera.plot.plot3d import plot_scalar
@@ -18,9 +20,6 @@ def cast(data):
 def strip(data):
     d = data.reshape(1, 1, 721, 1504, 1)
     return d[:, :, :, 32:1472, 0:1]
-
-
-sph.default_device = -1
 
 
 with th.no_grad():

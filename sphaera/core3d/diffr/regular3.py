@@ -3,6 +3,7 @@
 import logging
 import numpy as np
 import sphaera as sph
+import torch as th
 
 from torch.nn.functional import conv3d, pad
 from sphaera import cast
@@ -10,6 +11,9 @@ from sphaera import cast
 logger = logging.getLogger('sphaera')
 
 default_device = -1
+
+mps_ready = th.backends.mps.is_available() and th.backends.mps.is_built()
+cuda_ready = th.cuda.is_available()
 
 
 def get_device():
@@ -23,59 +27,115 @@ def set_device(ix):
 
     if ix != default_device:
         global centralx, centraly, centralz
-        centralx = centralx.cuda(device=ix)
-        centraly = centraly.cuda(device=ix)
-        centralz = centralz.cuda(device=ix)
+        if cuda_ready:
+            centralx = centralx.cuda(device=ix)
+            centraly = centraly.cuda(device=ix)
+            centralz = centralz.cuda(device=ix)
+        if mps_ready:
+            centralx = centralx.device('mps')
+            centraly = centraly.device('mps')
+            centralz = centralz.device('mps')
+
 
         global central5x, central5y, central5z
-        central5x = central5x.cuda(device=ix)
-        central5y = central5y.cuda(device=ix)
-        central5z = central5z.cuda(device=ix)
+        if cuda_ready:
+            central5x = central5x.cuda(device=ix)
+            central5y = central5y.cuda(device=ix)
+            central5z = central5z.cuda(device=ix)
+        if mps_ready:
+            central5x = central5x.device('mps')
+            central5y = central5y.device('mps')
+            central5z = central5z.device('mps')
 
         global sobel3x, sobel3y, sobel3z
-        sobel3x = sobel3x.cuda(device=ix)
-        sobel3y = sobel3y.cuda(device=ix)
-        sobel3z = sobel3z.cuda(device=ix)
+        if cuda_ready:
+            sobel3x = sobel3x.cuda(device=ix)
+            sobel3y = sobel3y.cuda(device=ix)
+            sobel3z = sobel3z.cuda(device=ix)
+        if mps_ready:
+            sobel3x = sobel3x.device('mps')
+            sobel3y = sobel3y.device('mps')
+            sobel3z = sobel3z.device('mps')
 
         global sobel5x, sobel5y, sobel5z
-        sobel5x = sobel5x.cuda(device=ix)
-        sobel5y = sobel5y.cuda(device=ix)
-        sobel5z = sobel5z.cuda(device=ix)
+        if cuda_ready:
+            sobel5x = sobel5x.cuda(device=ix)
+            sobel5y = sobel5y.cuda(device=ix)
+            sobel5z = sobel5z.cuda(device=ix)
+        if mps_ready:
+            sobel5x = sobel5x.device('mps')
+            sobel5y = sobel5y.device('mps')
+            sobel5z = sobel5z.device('mps')
 
         global sharr3x, sharr3y, sharr3z
-        sobel3x = sobel3x.cuda(device=ix)
-        sharr3y = sharr3y.cuda(device=ix)
-        sharr3z = sharr3z.cuda(device=ix)
+        if cuda_ready:
+            sobel3x = sobel3x.cuda(device=ix)
+            sharr3y = sharr3y.cuda(device=ix)
+            sharr3z = sharr3z.cuda(device=ix)
+        if mps_ready:
+            sobel3x = sobel3x.device('mps')
+            sharr3y = sharr3y.device('mps')
+            sharr3z = sharr3z.device('mps')
 
         global upwind_p2x, upwind_p2y, upwind_p2z
-        upwind_p2x = upwind_p2x.cuda(device=ix)
-        upwind_p2y = upwind_p2y.cuda(device=ix)
-        upwind_p2z = upwind_p2z.cuda(device=ix)
+        if cuda_ready:
+            upwind_p2x = upwind_p2x.cuda(device=ix)
+            upwind_p2y = upwind_p2y.cuda(device=ix)
+            upwind_p2z = upwind_p2z.cuda(device=ix)
+        if mps_ready:
+            upwind_p2x = upwind_p2x.device('mps')
+            upwind_p2y = upwind_p2y.device('mps')
+            upwind_p2z = upwind_p2z.device('mps')
 
         global upwind_m2x, upwind_m2y, upwind_m2z
-        upwind_m2x = upwind_m2x.cuda(device=ix)
-        upwind_m2y = upwind_m2y.cuda(device=ix)
-        upwind_m2z = upwind_m2z.cuda(device=ix)
+        if cuda_ready:
+            upwind_m2x = upwind_m2x.cuda(device=ix)
+            upwind_m2y = upwind_m2y.cuda(device=ix)
+            upwind_m2z = upwind_m2z.cuda(device=ix)
+        if mps_ready:
+            upwind_m2x = upwind_m2x.device('mps')
+            upwind_m2y = upwind_m2y.device('mps')
+            upwind_m2z = upwind_m2z.device('mps')
 
         global upwind_p3x, upwind_p3y, upwind_p3z
-        upwind_p3x = upwind_p3x.cuda(device=ix)
-        upwind_p3y = upwind_p3y.cuda(device=ix)
-        upwind_p3z = upwind_p3z.cuda(device=ix)
+        if cuda_ready:
+            upwind_p3x = upwind_p3x.cuda(device=ix)
+            upwind_p3y = upwind_p3y.cuda(device=ix)
+            upwind_p3z = upwind_p3z.cuda(device=ix)
+        if mps_ready:
+            upwind_p3x = upwind_p3x.device('mps')
+            upwind_p3y = upwind_p3y.device('mps')
+            upwind_p3z = upwind_p3z.device('mps')
 
         global upwind_m3x, upwind_m3y, upwind_m3z
-        upwind_m3x = upwind_m3x.cuda(device=ix)
-        upwind_m3y = upwind_m3y.cuda(device=ix)
-        upwind_m3z = upwind_m3z.cuda(device=ix)
+        if cuda_ready:
+            upwind_m3x = upwind_m3x.cuda(device=ix)
+            upwind_m3y = upwind_m3y.cuda(device=ix)
+            upwind_m3z = upwind_m3z.cuda(device=ix)
+        if mps_ready:
+            upwind_m3x = upwind_m3x.device('mps')
+            upwind_m3y = upwind_m3y.device('mps')
+            upwind_m3z = upwind_m3z.device('mps')
 
         global upwind_p4x, upwind_p4y, upwind_p4z
-        upwind_p4x = upwind_p4x.cuda(device=ix)
-        upwind_p4y = upwind_p4y.cuda(device=ix)
-        upwind_p4z = upwind_p4z.cuda(device=ix)
+        if cuda_ready:
+            upwind_p4x = upwind_p4x.cuda(device=ix)
+            upwind_p4y = upwind_p4y.cuda(device=ix)
+            upwind_p4z = upwind_p4z.cuda(device=ix)
+        if mps_ready:
+            upwind_p4x = upwind_p4x.device('mps')
+            upwind_p4y = upwind_p4y.device('mps')
+            upwind_p4z = upwind_p4z.device('mps')
 
         global upwind_m4x, upwind_m4y, upwind_m4z
-        upwind_m4x = upwind_m4x.cuda(device=ix)
-        upwind_m4y = upwind_m4y.cuda(device=ix)
-        upwind_m4z = upwind_m4z.cuda(device=ix)
+        if cuda_ready:
+            upwind_m4x = upwind_m4x.cuda(device=ix)
+            upwind_m4y = upwind_m4y.cuda(device=ix)
+            upwind_m4z = upwind_m4z.cuda(device=ix)
+        if mps_ready:
+            upwind_m4x = upwind_m4x.device('mps')
+            upwind_m4y = upwind_m4y.device('mps')
+            upwind_m4z = upwind_m4z.device('mps')
 
     default_device = ix
 
