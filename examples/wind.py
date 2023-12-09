@@ -54,6 +54,7 @@ for ix in range(32, 1472, 1):
         val = th.sum(dot(frame, wnd))
         spectrum[0, 0, jx, ix, 0] = val
 
+th.save(spectrum, 'spectrum.dat')
 plot_scalar('spectrum', strip(spectrum))
 
 
