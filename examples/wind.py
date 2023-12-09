@@ -38,8 +38,7 @@ with th.no_grad():
 
     u10 = cast(wind['u10'].data)
     v10 = cast(wind['v10'].data)
-    zero = cast(sph.zero)
-    wnd = (u10, v10, zero)
+    wnd = (u10, v10, sph.zero)
     velocity = norm(wnd)
     th.save(velocity, 'velocity.dat')
     plot_scalar('wind-velocity', velocity)
