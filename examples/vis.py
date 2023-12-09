@@ -9,5 +9,7 @@ def strip(data):
 
 
 with th.no_grad():
+    velocity = th.load('examples/velocity.dat')[:, :, :, :, 0:1]
+    plot_scalar('velocity', strip(velocity))
     spectrum = th.load('examples/spectrum.dat')
     plot_scalar('spectrum', strip(spectrum))
