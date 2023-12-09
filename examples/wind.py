@@ -4,7 +4,7 @@ import sphaera as sph
 import xarray as xr
 
 from sphaera.core3d.gridsys.regular3 import RegularGrid
-from sphaera.core3d.vec3 import dot, norm, cross
+from sphaera.core3d.vec3 import dot, norm, cross, normalize
 from sphaera.plot.plot3d import plot_scalar
 
 wind = xr.open_dataset('examples/wind.nc')
@@ -46,13 +46,17 @@ with th.no_grad():
     r_1 = sph.thetaphir.r[1][:, :, :, :, 0:1]
     r_2 = sph.thetaphir.r[2][:, :, :, :, 0:1]
     r = (r_0, r_1, r_2)
+    r = normalize(r)
+    # plot_scalar('r', strip(norm(r)))
 
     spectrum = th.zeros_like(u10)
     for ix in range(32, 1472, 1):
         print(ix)
         for jx in range(721):
             axis = r_0[:, :, jx, ix, 0:1], r_1[:, :, jx, ix, 0:1], r_2[:, :, jx, ix, 0:1]
+            signature = th.sgn(dot(r, axis))
             frame = cross(r, axis)
+            frame = signature * normalize(frame)
             val = th.sum(dot(frame, wnd))
             spectrum[0, 0, jx, ix, 0] = val
 
