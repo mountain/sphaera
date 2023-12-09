@@ -22,39 +22,39 @@ def strip(data):
 
 sph.default_device = -1
 
-# setup grid system
-sph.bind(RegularGrid(
-    basis='lng,lat,alt',
-    W=1504, L=721, H=2,
-    east=0 - 0.25 * 32, west=360 + 0.25 * 32,
-    north=-89.999, south=89.999,
-    upper=11.0, lower=10.0
-))
-sph.use('x,y,z')
-sph.use('xyz')
-sph.use('theta,phi,r')
-sph.use('thetaphir')
 
-u10 = cast(wind['u10'].data)
-v10 = cast(wind['v10'].data)
-wnd = (u10, v10, sph.zero)
-#plot_scalar('wind-velocity', strip(norm(wnd)))
+with th.no_grad():
+    # setup grid system
+    sph.bind(RegularGrid(
+        basis='lng,lat,alt',
+        W=1504, L=721, H=2,
+        east=0 - 0.25 * 32, west=360 + 0.25 * 32,
+        north=-89.999, south=89.999,
+        upper=11.0, lower=10.0
+    ))
+    sph.use('x,y,z')
+    sph.use('xyz')
+    sph.use('theta,phi,r')
+    sph.use('thetaphir')
 
-r_0 = sph.thetaphir.r[0][:, :, :, :, 0:1]
-r_1 = sph.thetaphir.r[1][:, :, :, :, 0:1]
-r_2 = sph.thetaphir.r[2][:, :, :, :, 0:1]
-r = (r_0, r_1, r_2)
+    u10 = cast(wind['u10'].data)
+    v10 = cast(wind['v10'].data)
+    wnd = (u10, v10, sph.zero)
+    #plot_scalar('wind-velocity', strip(norm(wnd)))
 
-spectrum = th.zeros_like(u10)
-for ix in range(32, 1472, 1):
-    print(ix)
-    for jx in range(721):
-        axis = r_0[:, :, jx, ix, 0:1], r_1[:, :, jx, ix, 0:1], r_2[:, :, jx, ix, 0:1]
-        frame = cross(r, axis)
-        val = th.sum(dot(frame, wnd))
-        spectrum[0, 0, jx, ix, 0] = val
+    r_0 = sph.thetaphir.r[0][:, :, :, :, 0:1]
+    r_1 = sph.thetaphir.r[1][:, :, :, :, 0:1]
+    r_2 = sph.thetaphir.r[2][:, :, :, :, 0:1]
+    r = (r_0, r_1, r_2)
 
-th.save(spectrum, 'spectrum.dat')
-plot_scalar('spectrum', strip(spectrum))
+    spectrum = th.zeros_like(u10)
+    for ix in range(32, 1472, 1):
+        print(ix)
+        for jx in range(721):
+            axis = r_0[:, :, jx, ix, 0:1], r_1[:, :, jx, ix, 0:1], r_2[:, :, jx, ix, 0:1]
+            frame = cross(r, axis)
+            val = th.sum(dot(frame, wnd))
+            spectrum[0, 0, jx, ix, 0] = val
 
-
+    th.save(spectrum, 'spectrum.dat')
+    plot_scalar('spectrum', strip(spectrum))
