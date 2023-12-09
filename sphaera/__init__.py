@@ -82,7 +82,7 @@ def set_device(ix):
 
 
 def cast(element, device=-1) -> Tensor:
-    element = np.array(element, dtype=np.float64)
+    element = np.array(element, dtype=np.float32)
     tensor = th.DoubleTensor(element)
     if device != -1:
         if cuda_ready:

@@ -36,10 +36,10 @@ def odeint(func, y0, t, rtol=1e-7, atol=1e-9, method=None, options=None):
         t: 1-D Tensor holding a sequence of time points for which to solve for
             `y`. The initial time point should be the first element of this sequence,
             and each time must be larger than the previous time. May have any floating
-            point dtype. Converted to a Tensor with float64 dtype.
-        rtol: optional float64 Tensor specifying an upper bound on relative error,
+            point dtype. Converted to a Tensor with float32 dtype.
+        rtol: optional float32 Tensor specifying an upper bound on relative error,
             per element of `y`.
-        atol: optional float64 Tensor specifying an upper bound on absolute error,
+        atol: optional float32 Tensor specifying an upper bound on absolute error,
             per element of `y`.
         method: optional string indicating the integration method to use.
         options: optional dict of configuring options for the indicated integration

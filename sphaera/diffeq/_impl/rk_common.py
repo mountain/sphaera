@@ -11,9 +11,9 @@ class _RungeKuttaState(collections.namedtuple('_RungeKuttaState', 'y1, f1, t0, t
     Attributes:
         y1: Tensor giving the function value at the end of the last time step.
         f1: Tensor giving derivative at the end of the last time step.
-        t0: scalar float64 Tensor giving start of the last time step.
-        t1: scalar float64 Tensor giving end of the last time step.
-        dt: scalar float64 Tensor giving the size for the next time step.
+        t0: scalar float32 Tensor giving start of the last time step.
+        t1: scalar float32 Tensor giving end of the last time step.
+        dt: scalar float32 Tensor giving the size for the next time step.
         interp_coef: list of Tensors giving coefficients for polynomial
             interpolation between `t0` and `t1`.
     """
@@ -27,8 +27,8 @@ def _runge_kutta_step(func, y0, f0, t0, dt, tableau):
             of `y`.
         y0: Tensor initial value for the state.
         f0: Tensor initial value for the derivative, computed from `func(t0, y0)`.
-        t0: float64 scalar Tensor giving the initial time.
-        dt: float64 scalar Tensor giving the size of the desired time step.
+        t0: float32 scalar Tensor giving the initial time.
+        dt: float32 scalar Tensor giving the size of the desired time step.
         tableau: optional _ButcherTableau describing how to take the Runge-Kutta
             step.
         name: optional name for the operation.
