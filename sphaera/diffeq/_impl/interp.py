@@ -40,9 +40,9 @@ def _interp_evaluate(coefficients, t0, t1, t):
 
     Args:
         coefficients: list of Tensor coefficients as created by `interp_fit`.
-        t0: scalar float32 Tensor giving the start of the interval.
-        t1: scalar float32 Tensor giving the end of the interval.
-        t: scalar float32 Tensor giving the desired interpolation point.
+        t0: scalar float64 Tensor giving the start of the interval.
+        t1: scalar float64 Tensor giving the end of the interval.
+        t: scalar float64 Tensor giving the desired interpolation point.
 
     Returns:
         Polynomial interpolation of the coefficients at time `t`.

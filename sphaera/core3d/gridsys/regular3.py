@@ -85,7 +85,7 @@ class RegularGrid:
 
     def random(self) -> Tensor:
         d = sph.get_device()
-        r = th.rand(1, 1, self.L, self.W, self.H, dtype=th.float32)
+        r = th.rand(1, 1, self.L, self.W, self.H, dtype=th.float64)
         if th.cuda.is_available():
             return r.cuda(device=d)
         else:

@@ -69,9 +69,9 @@ class Dopri5Solver(AdaptiveStepsizeODESolver):
         self.rtol = rtol if _is_iterable(rtol) else [rtol] * len(y0)
         self.atol = atol if _is_iterable(atol) else [atol] * len(y0)
         self.first_step = first_step
-        self.safety = _convert_to_tensor(safety, dtype=torch.float32, device=y0[0].device)
-        self.ifactor = _convert_to_tensor(ifactor, dtype=torch.float32, device=y0[0].device)
-        self.dfactor = _convert_to_tensor(dfactor, dtype=torch.float32, device=y0[0].device)
+        self.safety = _convert_to_tensor(safety, dtype=torch.float64, device=y0[0].device)
+        self.ifactor = _convert_to_tensor(ifactor, dtype=torch.float64, device=y0[0].device)
+        self.dfactor = _convert_to_tensor(dfactor, dtype=torch.float64, device=y0[0].device)
         self.max_num_steps = _convert_to_tensor(max_num_steps, dtype=torch.int32, device=y0[0].device)
 
     def before_integrate(self, t):

@@ -4,16 +4,13 @@ import xarray as xr
 
 import sphaera as sph
 
+sph.set_device(0)
+
 from sphaera.core3d.gridsys.regular3 import RegularGrid
-from sphaera.core3d.vec3 import norm
+from sphaera.core3d.vec3 import dot, norm, cross, normalize, mult
 from sphaera.plot.plot3d import plot_scalar
 
 wind = xr.open_dataset('examples/wind.nc')
-
-if sph.mps_ready or sph.cuda_ready:
-    sph.set_device(0)
-else:
-    sph.set_device(-1)
 
 
 def cast(data):
@@ -45,4 +42,26 @@ with th.no_grad():
     wnd = (u10, v10, sph.zero)
     velocity = norm(wnd)
     th.save(velocity, 'velocity.dat')
-    plot_scalar('wind-velocity', strip(velocity))
+    # plot_scalar('wind-velocity', strip(velocity))
+
+    r_0 = sph.thetaphir.r[0][:, :, :, :, 0:1]
+    r_1 = sph.thetaphir.r[1][:, :, :, :, 0:1]
+    r_2 = sph.thetaphir.r[2][:, :, :, :, 0:1]
+    r = (r_0, r_1, r_2)
+    r = normalize(r)
+    # plot_scalar('r', strip(norm(r)))
+
+    spectrum = th.zeros_like(u10)
+    for ix in range(32, 1472, 1):
+        print(ix)
+        for jx in range(721):
+            axis = r_0[:, :, jx, ix, 0:1], r_1[:, :, jx, ix, 0:1], r_2[:, :, jx, ix, 0:1]
+            signature = th.sign(dot(r, axis))
+            frame = cross(r, axis)
+            frame = mult(normalize(frame), (signature, signature, signature))
+            val = th.sum(dot(frame, wnd))
+            spectrum[0, 0, jx, ix, 0] = val
+
+    th.save(spectrum, 'spectrum.dat')
+    spectrum = th.log(spectrum)
+    plot_scalar('spectrum', strip(spectrum))
