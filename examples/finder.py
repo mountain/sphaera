@@ -75,7 +75,7 @@ r = normalize(r)
 class BestVeloFinder(L.LightningModule):
     def __init__(self):
         super().__init__()
-        self.base_velo = th.nn.Parameter(th.ones_like(velocity))
+        self.base_velo = th.nn.Parameter(th.ones_like(velocity)).to(th.device('mps'))
 
     def forward(self, x):
         ix, jx = x
@@ -117,7 +117,7 @@ train, valid = th.utils.data.random_split(dataset, [1504 * 721 // 7 * 6, 1504 * 
 # -------------------
 # Step 3: Train
 # -------------------
-finder = BestVeloFinder().to(th.device('mps'))
+finder = BestVeloFinder()
 trainer = L.Trainer()
 trainer.fit(finder, th.utils.data.DataLoader(train, batch_size=1), th.utils.data.DataLoader(valid, batch_size=1))
 
