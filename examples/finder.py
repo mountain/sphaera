@@ -108,11 +108,11 @@ class RandomPointDataset(D.dataset.Dataset):
         return random.sample(range(1504), 1)[0], random.sample(range(721), 1)[0]
 
     def __len__(self):
-        return 1504 * 721
+        return 1504 * 721 * 4
 
 
 dataset = RandomPointDataset()
-train, valid = th.utils.data.random_split(dataset, [1504 * 721 // 7 * 6, 1504 * 721 // 7])
+train, valid = th.utils.data.random_split(dataset, [1504 * 721 * 3, 1504 * 721])
 
 # -------------------
 # Step 3: Train

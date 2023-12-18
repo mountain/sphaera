@@ -36,6 +36,13 @@ def div(x, y):
 
 
 @th.compile
+def scale(x, k):
+    x1, x2, x3 = x
+
+    return x1 * k, x2 * k, x3 * k
+
+
+@th.compile
 def dot(x, y):
     x1, x2, x3 = x
     y1, y2, y3 = y
