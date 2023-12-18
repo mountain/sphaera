@@ -35,6 +35,7 @@ def div(x, y):
     return x1 / y1, x2 / y2, x3 / y3
 
 
+@th.compile
 def dot(x, y):
     x1, x2, x3 = x
     y1, y2, y3 = y
@@ -64,6 +65,7 @@ def normsq(v):
     return th.sum(dot(v, v), dim=1, keepdim=True)
 
 
+@th.compile
 def normalize(v):
     x, y, z = v
     r = th.sqrt(x * x + y * y + z * z)
