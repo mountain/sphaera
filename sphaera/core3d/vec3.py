@@ -35,7 +35,6 @@ def div(x, y):
     return x1 / y1, x2 / y2, x3 / y3
 
 
-@th.compile
 def dot(x, y):
     x1, x2, x3 = x
     y1, y2, y3 = y
