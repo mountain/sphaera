@@ -37,13 +37,22 @@ class Elements:
 
     def set_device(self, ix):
         if ix >= 0:
-            self.dL1 = self.dL1.cuda(device=ix)
-            self.dL2 = self.dL2.cuda(device=ix)
-            self.dL3 = self.dL3.cuda(device=ix)
-            self.dS1 = self.dS1.cuda(device=ix)
-            self.dS2 = self.dS2.cuda(device=ix)
-            self.dS3 = self.dS3.cuda(device=ix)
-            self.dVol = self.dVol.cuda(device=ix)
+            if sph.cuda_ready:
+                self.dL1 = self.dL1.cuda(device=ix)
+                self.dL2 = self.dL2.cuda(device=ix)
+                self.dL3 = self.dL3.cuda(device=ix)
+                self.dS1 = self.dS1.cuda(device=ix)
+                self.dS2 = self.dS2.cuda(device=ix)
+                self.dS3 = self.dS3.cuda(device=ix)
+                self.dVol = self.dVol.cuda(device=ix)
+            elif sph.mps_ready:
+                self.dL1 = self.dL1.float().to(th.device("mps"))
+                self.dL2 = self.dL2.float().to(th.device("mps"))
+                self.dL3 = self.dL3.float().to(th.device("mps"))
+                self.dS1 = self.dS1.float().to(th.device("mps"))
+                self.dS2 = self.dS2.float().to(th.device("mps"))
+                self.dS3 = self.dS3.float().to(th.device("mps"))
+                self.dVol = self.dVol.float().to(th.device("mps"))
         self.default_device = ix
 
     @cached_property

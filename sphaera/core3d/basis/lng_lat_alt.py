@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import numpy as np
+import torch as th
+import sphaera as sph
 
 import sphaera.core3d.basis.theta_phi_r as delegate
 
@@ -10,11 +11,11 @@ _params_ = ('lng', 'lat', 'alt')
 
 
 def d2r(d):
-    return d * np.pi / 180
+    return sph.align(d) * th.pi / 180
 
 
 def r2d(r):
-    return r / np.pi * 180
+    return sph.align(r) / th.pi * 180
 
 
 def transform(lng, lat, alt, r0=6371000, device=-1):

@@ -65,7 +65,6 @@ def normsq(v):
     return th.sum(dot(v, v), dim=1, keepdim=True)
 
 
-@th.compile
 def normalize(v):
     x, y, z = v
     r = th.sqrt(x * x + y * y + z * z)

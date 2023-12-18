@@ -22,7 +22,12 @@ lanczosk3d = None
 
 
 def get_device():
-    return default_device
+    if cuda_ready:
+        return th.device("cuda:%s" % default_device)
+    elif mps_ready:
+        return th.device("mps")
+    else:
+        return th.device("cpu")
 
 
 def set_device(ix):
@@ -30,16 +35,10 @@ def set_device(ix):
 
     if default_device != -1:
         if lanczosk2d is not None:
-            if cuda_ready:
-                lanczosk2d = lanczosk2d.cuda(device=ix)
-            elif mps_ready:
-                lanczosk2d = lanczosk2d.to(th.device("mps"))
+            lanczosk2d = align(lanczosk2d)
 
         if lanczosk3d is not None:
-            if cuda_ready:
-                lanczosk3d = lanczosk3d.cuda(device=ix)
-            elif mps_ready:
-                lanczosk3d = lanczosk3d.to(th.device("mps"))
+            lanczosk3d = align(lanczosk3d)
 
     if default_device == ix:
         return
@@ -69,30 +68,38 @@ def set_device(ix):
         'L': _grid_.L,
         'W': _grid_.W,
         'H': _grid_.H,
-        'boundary': lambda: _grid_.boundary(),
-        'mk_zero': _grid_.mk_zero,
-        'mk_one': _grid_.mk_one,
-        'zero': _grid_.zero,
-        'one': _grid_.one,
-        'random': lambda: _grid_.random(),
-        'dL': _element_.dL,
-        'dS': _element_.dS,
-        'dV': _element_.dV,
+        'boundary': lambda: align(_grid_.boundary()),
+        'mk_zero': lambda: align(_grid_.mk_zero()),
+        'mk_one': lambda: align(_grid_.mk_one()),
+        'zero': align(_grid_.zero),
+        'one': align(_grid_.one),
+        'random': lambda: align(_grid_.random()),
+        'dL': map(align, _element_.dL),
+        'dS': map(align, _element_.dS),
+        'dV': map(align, _element_.dV),
     })
 
 
 def cast(element, device=-1) -> Tensor:
     element = np.array(element, dtype=np.float64)
-    tensor = th.DoubleTensor(element)
     if device != -1:
         if cuda_ready:
+            tensor = th.DoubleTensor(element)
             return tensor.cuda(device=device)
         elif mps_ready:
+            tensor = th.FloatTensor(element)
             return tensor.to(th.device("mps"))
         else:
+            tensor = th.DoubleTensor(element)
             return tensor
     else:
-        return tensor
+        return th.DoubleTensor(element)
+
+
+def align(data):
+    if mps_ready:
+        data = data.float()
+    return data.to(get_device())
 
 
 diff = None
