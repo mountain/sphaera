@@ -56,7 +56,7 @@ else:
 u10 = cast(wind['u10'].data)
 v10 = cast(wind['v10'].data)
 wnd = (u10, v10, sph.zero)
-velocity = norm(wnd)
+velocity = cast(norm(wnd))
 th.save(velocity, 'velocity.dat')
 # plot_scalar('wind-velocity', strip(velocity))
 
