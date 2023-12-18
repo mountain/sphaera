@@ -60,7 +60,7 @@ for ix in range(1504):
         print(ix, jx)
         axis = r_0[:, :, jx, ix, 0:1], r_1[:, :, jx, ix, 0:1], r_2[:, :, jx, ix, 0:1]
         coeff = dot(r, axis)
-        perp = normalize(sub(r, scale(axis, coeff)))
+        perp = sub(r, scale(axis, coeff))
         frame = cross(axis, perp)
         signature = th.sign(dot(r, axis))
         frame = scale(frame, signature)
