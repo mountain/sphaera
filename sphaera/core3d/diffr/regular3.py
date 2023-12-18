@@ -32,9 +32,9 @@ def set_device(ix):
             centraly = centraly.cuda(device=ix)
             centralz = centralz.cuda(device=ix)
         if mps_ready:
-            centralx = centralx.to(th.device("mps"))
-            centraly = centraly.to(th.device("mps"))
-            centralz = centralz.to(th.device("mps"))
+            centralx = centralx.float().to(th.device("mps"))
+            centraly = centraly.float().to(th.device("mps"))
+            centralz = centralz.float().to(th.device("mps"))
 
 
         global central5x, central5y, central5z
@@ -43,9 +43,9 @@ def set_device(ix):
             central5y = central5y.cuda(device=ix)
             central5z = central5z.cuda(device=ix)
         if mps_ready:
-            central5x = central5x.to(th.device("mps"))
-            central5y = central5y.to(th.device("mps"))
-            central5z = central5z.to(th.device("mps"))
+            central5x = central5x.float().to(th.device("mps"))
+            central5y = central5y.float().to(th.device("mps"))
+            central5z = central5z.float().to(th.device("mps"))
 
         global sobel3x, sobel3y, sobel3z
         if cuda_ready:
@@ -53,9 +53,9 @@ def set_device(ix):
             sobel3y = sobel3y.cuda(device=ix)
             sobel3z = sobel3z.cuda(device=ix)
         if mps_ready:
-            sobel3x = sobel3x.to(th.device("mps"))
-            sobel3y = sobel3y.to(th.device("mps"))
-            sobel3z = sobel3z.to(th.device("mps"))
+            sobel3x = sobel3x.float().to(th.device("mps"))
+            sobel3y = sobel3y.float().to(th.device("mps"))
+            sobel3z = sobel3z.float().to(th.device("mps"))
 
         global sobel5x, sobel5y, sobel5z
         if cuda_ready:
@@ -63,9 +63,9 @@ def set_device(ix):
             sobel5y = sobel5y.cuda(device=ix)
             sobel5z = sobel5z.cuda(device=ix)
         if mps_ready:
-            sobel5x = sobel5x.to(th.device("mps"))
-            sobel5y = sobel5y.to(th.device("mps"))
-            sobel5z = sobel5z.to(th.device("mps"))
+            sobel5x = sobel5x.float().to(th.device("mps"))
+            sobel5y = sobel5y.float().to(th.device("mps"))
+            sobel5z = sobel5z.float().to(th.device("mps"))
 
         global sharr3x, sharr3y, sharr3z
         if cuda_ready:
@@ -73,9 +73,9 @@ def set_device(ix):
             sharr3y = sharr3y.cuda(device=ix)
             sharr3z = sharr3z.cuda(device=ix)
         if mps_ready:
-            sobel3x = sobel3x.to(th.device("mps"))
-            sharr3y = sharr3y.to(th.device("mps"))
-            sharr3z = sharr3z.to(th.device("mps"))
+            sobel3x = sobel3x.float().to(th.device("mps"))
+            sharr3y = sharr3y.float().to(th.device("mps"))
+            sharr3z = sharr3z.float().to(th.device("mps"))
 
         global upwind_p2x, upwind_p2y, upwind_p2z
         if cuda_ready:
@@ -83,9 +83,9 @@ def set_device(ix):
             upwind_p2y = upwind_p2y.cuda(device=ix)
             upwind_p2z = upwind_p2z.cuda(device=ix)
         if mps_ready:
-            upwind_p2x = upwind_p2x.to(th.device("mps"))
-            upwind_p2y = upwind_p2y.to(th.device("mps"))
-            upwind_p2z = upwind_p2z.to(th.device("mps"))
+            upwind_p2x = upwind_p2x.float().to(th.device("mps"))
+            upwind_p2y = upwind_p2y.float().to(th.device("mps"))
+            upwind_p2z = upwind_p2z.float().to(th.device("mps"))
 
         global upwind_m2x, upwind_m2y, upwind_m2z
         if cuda_ready:
@@ -93,9 +93,9 @@ def set_device(ix):
             upwind_m2y = upwind_m2y.cuda(device=ix)
             upwind_m2z = upwind_m2z.cuda(device=ix)
         if mps_ready:
-            upwind_m2x = upwind_m2x.to(th.device("mps"))
-            upwind_m2y = upwind_m2y.to(th.device("mps"))
-            upwind_m2z = upwind_m2z.to(th.device("mps"))
+            upwind_m2x = upwind_m2x.float().to(th.device("mps"))
+            upwind_m2y = upwind_m2y.float().to(th.device("mps"))
+            upwind_m2z = upwind_m2z.float().to(th.device("mps"))
 
         global upwind_p3x, upwind_p3y, upwind_p3z
         if cuda_ready:
@@ -103,9 +103,9 @@ def set_device(ix):
             upwind_p3y = upwind_p3y.cuda(device=ix)
             upwind_p3z = upwind_p3z.cuda(device=ix)
         if mps_ready:
-            upwind_p3x = upwind_p3x.to(th.device("mps"))
-            upwind_p3y = upwind_p3y.to(th.device("mps"))
-            upwind_p3z = upwind_p3z.to(th.device("mps"))
+            upwind_p3x = upwind_p3x.float().to(th.device("mps"))
+            upwind_p3y = upwind_p3y.float().to(th.device("mps"))
+            upwind_p3z = upwind_p3z.float().to(th.device("mps"))
 
         global upwind_m3x, upwind_m3y, upwind_m3z
         if cuda_ready:
@@ -113,9 +113,9 @@ def set_device(ix):
             upwind_m3y = upwind_m3y.cuda(device=ix)
             upwind_m3z = upwind_m3z.cuda(device=ix)
         if mps_ready:
-            upwind_m3x = upwind_m3x.to(th.device("mps"))
-            upwind_m3y = upwind_m3y.to(th.device("mps"))
-            upwind_m3z = upwind_m3z.to(th.device("mps"))
+            upwind_m3x = upwind_m3x.float().to(th.device("mps"))
+            upwind_m3y = upwind_m3y.float().to(th.device("mps"))
+            upwind_m3z = upwind_m3z.float().to(th.device("mps"))
 
         global upwind_p4x, upwind_p4y, upwind_p4z
         if cuda_ready:
@@ -123,9 +123,9 @@ def set_device(ix):
             upwind_p4y = upwind_p4y.cuda(device=ix)
             upwind_p4z = upwind_p4z.cuda(device=ix)
         if mps_ready:
-            upwind_p4x = upwind_p4x.to(th.device("mps"))
-            upwind_p4y = upwind_p4y.to(th.device("mps"))
-            upwind_p4z = upwind_p4z.to(th.device("mps"))
+            upwind_p4x = upwind_p4x.float().to(th.device("mps"))
+            upwind_p4y = upwind_p4y.float().to(th.device("mps"))
+            upwind_p4z = upwind_p4z.float().to(th.device("mps"))
 
         global upwind_m4x, upwind_m4y, upwind_m4z
         if cuda_ready:
@@ -133,9 +133,9 @@ def set_device(ix):
             upwind_m4y = upwind_m4y.cuda(device=ix)
             upwind_m4z = upwind_m4z.cuda(device=ix)
         if mps_ready:
-            upwind_m4x = upwind_m4x.to(th.device("mps"))
-            upwind_m4y = upwind_m4y.to(th.device("mps"))
-            upwind_m4z = upwind_m4z.to(th.device("mps"))
+            upwind_m4x = upwind_m4x.float().to(th.device("mps"))
+            upwind_m4y = upwind_m4y.float().to(th.device("mps"))
+            upwind_m4z = upwind_m4z.float().to(th.device("mps"))
 
     default_device = ix
 
