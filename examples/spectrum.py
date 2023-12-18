@@ -4,7 +4,11 @@ import xarray as xr
 
 import sphaera as sph
 
-sph.set_device(0)
+
+if sph.mps_ready or sph.cuda_ready:
+    sph.set_device(0)
+else:
+    sph.set_device(-1)
 
 from sphaera.core3d.gridsys.regular3 import RegularGrid
 from sphaera.core3d.vec3 import dot, norm, cross, normalize, mult
@@ -14,7 +18,7 @@ wind = xr.open_dataset('examples/wind.nc')
 
 
 def cast(data):
-    d = np.array(data, dtype=np.float32).reshape(721, 1440)
+    d = np.array(data, dtype=np.float64).reshape(721, 1440)
     return sph.cast(np.concatenate((d[:, 1439:1407:-1], d, d[:, 0:32:1]), axis=1)).reshape(1, 1, 721, 1504, 1)
 
 

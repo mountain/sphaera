@@ -3,6 +3,7 @@ cached_property
 numpy
 scipy
 torch
+lightning
 
 vtk
 pyvista
