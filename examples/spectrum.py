@@ -64,6 +64,10 @@ with th.no_grad():
             frame = cross(axis, perp)
             signature = th.sign(dot(r, axis))
             frame = scale(frame, signature)
-            spectrum[0:1, 0:1, jx, ix, 0:1] = th.sum(dot(frame, wnd) * sph._element_.dV) / th.sum(sph._element_.dV)
+            inner = dot(frame, wnd) * sph._element_.dV
+            vol = sph._element_.dV
+            inner = inner[:, :, :, 32:1472, 0:1]
+            vol = vol[:, :, :, 32:1472, 0:1]
+            spectrum[0:1, 0:1, jx, ix, 0:1] = th.sum(inner) / th.sum(vol)
 
     th.save(spectrum.to(th.device('cpu')), './examples/spectrum.dat')
