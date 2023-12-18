@@ -64,6 +64,6 @@ for ix in range(1504):
         frame = cross(axis, perp)
         signature = th.sign(dot(r, axis))
         frame = scale(frame, signature)
-        spectrum[0:1, 0:1, jx, ix, 0:1] = th.sum(dot(frame, wnd) * sph.dV()) / th.sum(sph.dV())
+        spectrum[0:1, 0:1, jx, ix, 0:1] = th.sum(dot(frame, wnd) * sph._element_.dV) / th.sum(sph._element_.dV)
 
 th.save(spectrum, './examples/spectrum.dat')
