@@ -80,7 +80,7 @@ class BestVeloFinder(L.LightningModule):
     def forward(self, x):
         ix, jx = x
         axis = r_0[:, :, jx, ix, 0:1], r_1[:, :, jx, ix, 0:1], r_2[:, :, jx, ix, 0:1]
-        signature = th.sign(dot(r, axis))
+        signature = sph.align(th.sign(dot(r, axis)))
         scale = signature * self.base_velo[:, :, jx, ix, 0:1]
         frame = cross(r, axis)
         frame = mult(frame, (scale, scale, scale))
