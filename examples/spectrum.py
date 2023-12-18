@@ -1,9 +1,9 @@
-import random
-
 import torch as th
+import torch._dynamo
+torch._dynamo.config.suppress_errors = True
+
 import numpy as np
 import xarray as xr
-
 import sphaera as sph
 
 from sphaera.core3d.gridsys.regular3 import RegularGrid
