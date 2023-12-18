@@ -57,6 +57,7 @@ r = normalize(r)
 spectrum = th.zeros_like(velocity)
 for ix in range(1504):
     for jx in range(721):
+        print(ix, jx)
         axis = r_0[:, :, jx, ix, 0:1], r_1[:, :, jx, ix, 0:1], r_2[:, :, jx, ix, 0:1]
         coeff = dot(r, axis)
         perp = normalize(sub(r, scale(axis, coeff)))
