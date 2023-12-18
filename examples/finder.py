@@ -75,14 +75,14 @@ r = normalize(r)
 class BestVeloFinder(L.LightningModule):
     def __init__(self):
         super().__init__()
-        self.base_velo = th.nn.Parameter(sph.align(th.ones_like(velocity)))
+        self.base_velo = th.nn.Parameter(th.ones_like(velocity))
 
     def forward(self, x):
         ix, jx = x
-        axis = sph.align(r_0[:, :, jx, ix, 0:1]), sph.align(r_1[:, :, jx, ix, 0:1]), sph.align(r_2[:, :, jx, ix, 0:1])
-        signature = sph.align(th.sign(dot(r, axis)))
-        scale = signature * self.base_velo[:, :, jx, ix, 0:1]
+        axis = r_0[:, :, jx, ix, 0:1], r_1[:, :, jx, ix, 0:1], r_2[:, :, jx, ix, 0:1]
         frame = cross(r, axis)
+        signature = th.sign(dot(r, axis))
+        scale = mult(self.base_velo[:, :, jx, ix, 0:1], (signature, signature, signature))
         frame = mult(frame, (scale, scale, scale))
         return frame
 
