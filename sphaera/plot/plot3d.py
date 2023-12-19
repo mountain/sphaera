@@ -9,11 +9,11 @@ sphere = pv.Sphere(
     radius=6371000.0)
 
 
-def plot_scalar(varname, scl):
+def plot_scalar(varname, scl, cmap='plasma'):
     f = scl[0, 0, :, :, 0].numpy()[::-1, ::-1].T.reshape(721 * 1440, 1)
     sphere[varname] = f
     sphere.set_active_scalars(varname)
-    sphere.plot(cpos='xz', cmap='plasma')
+    sphere.plot(cpos='xz', cmap=cmap)
 
 
 def plot_vector(varname, vec):
