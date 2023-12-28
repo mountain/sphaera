@@ -148,7 +148,12 @@ multiprocessing.freeze_support()
 
 finder = BestFinder()
 trainer = L.Trainer()
-trainer.fit(finder, th.utils.data.DataLoader(train, batch_size=128, num_workers=1), th.utils.data.DataLoader(valid, batch_size=1))
+train_loader = th.utils.data.DataLoader(train, batch_size=128, num_workers=7)
+valid_loader = th.utils.data.DataLoader(valid, batch_size=1)
+next(train_loader)
+next(valid_loader)
+
+trainer.fit(finder, train_loader, valid_loader)
 
 th.save(finder.a, 'a.dat')
 th.save(finder.ux, 'ux.dat')
