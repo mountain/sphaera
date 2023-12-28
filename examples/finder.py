@@ -149,7 +149,7 @@ multiprocessing.freeze_support()
 finder = BestFinder()
 trainer = L.Trainer()
 train_loader = th.utils.data.DataLoader(train, batch_size=128, num_workers=7)
-valid_loader = th.utils.data.DataLoader(valid, batch_size=1)
+valid_loader = th.utils.data.DataLoader(valid, batch_size=1, num_workers=7)
 
 trainer.fit(finder, train_loader, valid_loader)
 
