@@ -142,6 +142,10 @@ train, valid = th.utils.data.random_split(dataset, [376 * 181 * 3, 376 * 181])
 # -------------------
 # Step 3: Train
 # -------------------
+import multiprocessing
+
+multiprocessing.freeze_support()
+
 finder = BestFinder()
 trainer = L.Trainer()
 trainer.fit(finder, th.utils.data.DataLoader(train, batch_size=128, num_workers=7), th.utils.data.DataLoader(valid, batch_size=1))
