@@ -55,11 +55,11 @@ else:
 fx = sph.align(sph.xyz.x[0][:, :, :, :, 0:1])
 fy = sph.align(sph.xyz.y[1][:, :, :, :, 0:1])
 fz = sph.align(sph.xyz.z[2][:, :, :, :, 0:1])
-a = cast(2 * np.random.random([181, 376]) - 1)
-ux = cast(2 * np.random.random([181, 376]) - 1)
-uy = cast(2 * np.random.random([181, 376]) - 1)
-vx = cast(2 * np.random.random([181, 376]) - 1)
-vy = cast(2 * np.random.random([181, 376]) - 1)
+a = cast(2 * np.random.random([181, 360]) - 1)
+ux = cast(2 * np.random.random([181, 360]) - 1)
+uy = cast(2 * np.random.random([181, 360]) - 1)
+vx = cast(2 * np.random.random([181, 360]) - 1)
+vy = cast(2 * np.random.random([181, 360]) - 1)
 
 # ----------------------------------------------
 # Step 2: Define a machine learning model
