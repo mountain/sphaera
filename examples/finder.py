@@ -22,7 +22,7 @@ torch._dynamo.config.suppress_errors = True
 
 
 def cast(data):
-    d = np.array(data, dtype=np.float64).reshape(181, 360)
+    d = np.array(data, dtype=np.float32).reshape(181, 360)
     return sph.cast(np.concatenate((d[:, 359:351:-1], d, d[:, 0:8:1]), axis=1), device=0).reshape(1, 1, 181, 376, 1)
 
 
@@ -79,7 +79,7 @@ class BestFinder(L.LightningModule):
     def forward(self, x):
         ix, jx, dd, theta = x
         dd = dd.to(th.device('mps'))
-        theta = th.FloatTensor(theta).to(th.device('mps'))
+        theta = theta.to(th.device('mps')).float()
 
         a0 = self.a[:, :, jx, ix, 0:1]
         u0 = self.u[0][:, :, jx, ix, 0:1], self.u[1][:, :, jx, ix, 0:1], self.u[2][:, :, jx, ix, 0:1]
