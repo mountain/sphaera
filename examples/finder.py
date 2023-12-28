@@ -78,6 +78,8 @@ class BestFinder(L.LightningModule):
 
     def forward(self, x):
         ix, jx, dd, theta = x
+        ix = ix.to(th.device('mps'))
+        jx = jx.to(th.device('mps'))
         dd = dd.to(th.device('mps'))
         theta = theta.float().to(th.device('mps'))
 
