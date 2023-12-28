@@ -144,7 +144,7 @@ train, valid = th.utils.data.random_split(dataset, [376 * 181 * 3, 376 * 181])
 # -------------------
 finder = BestFinder()
 trainer = L.Trainer()
-trainer.fit(finder, th.utils.data.DataLoader(train, batch_size=128), th.utils.data.DataLoader(valid, batch_size=1))
+trainer.fit(finder, th.utils.data.DataLoader(train, batch_size=128, num_workers=7), th.utils.data.DataLoader(valid, batch_size=1))
 
 th.save(finder.a, 'a.dat')
 th.save(finder.ux, 'ux.dat')
