@@ -99,7 +99,7 @@ class BestFinder(L.LightningModule):
         ix = th.fmod(8 + lng + alpha * 180 / th.pi, 360).long().flatten()[0]
         jx = (eta * 180 / th.pi).long().flatten()[0]
         aexp = a0 + (th.cos(theta) + a0 * th.sin(theta)) * ds
-        areal = self.a.to(th.device('mps'))[:, :, jx, ix, 0:1]
+        areal = self.a[:, :, jx, ix, 0:1]
 
         return u0, v0, aexp, areal
 
