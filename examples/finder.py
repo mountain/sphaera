@@ -79,8 +79,8 @@ class BestFinder(L.LightningModule):
     def forward(self, x):
         ix, jx, dd, theta = x
         a0 = self.a[:, :, jx, ix, 0:1]
-        u0 = self.ux[:, :, jx, ix, 0:1], self.uy[:, :, jx, ix, 0:1], fz[:, :, jx, ix, 0:1]
-        v0 = self.vx[:, :, jx, ix, 0:1], self.vy[:, :, jx, ix, 0:1], fz[:, :, jx, ix, 0:1]
+        u0 = self.u[0][:, :, jx, ix, 0:1], self.u[1][:, :, jx, ix, 0:1], self.u[2][:, :, jx, ix, 0:1]
+        v0 = self.v[0][:, :, jx, ix, 0:1], self.v[1][:, :, jx, ix, 0:1], self.v[2][:, :, jx, ix, 0:1]
         ds = 2 * th.pi / 360 * dd # dd degree distance
 
         lat = 90 - jx
