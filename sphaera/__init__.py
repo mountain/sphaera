@@ -85,10 +85,10 @@ def cast(element, device=-1) -> Tensor:
     if device != -1:
         if cuda_ready:
             tensor = th.DoubleTensor(element)
-            return tensor.cuda(device=device)
+            return tensor
         elif mps_ready:
             tensor = th.FloatTensor(element)
-            return tensor.to(th.device("mps"))
+            return tensor
         else:
             tensor = th.DoubleTensor(element)
             return tensor

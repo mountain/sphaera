@@ -14,11 +14,16 @@ import torch.nn.functional as F
 import torch.utils.data as D
 
 from sphaera.core3d.gridsys.regular3 import RegularGrid
-from sphaera.core3d.vec3 import dot, norm, cross, normalize, mult
+from sphaera.core3d.vec3 import dot
 
 import torch._dynamo
 
 torch._dynamo.config.suppress_errors = True
+
+if sph.mps_ready or sph.cuda_ready:
+    sph.set_device(0)
+else:
+    sph.set_device(-1)
 
 
 def cast(data):
@@ -29,6 +34,7 @@ def cast(data):
 def strip(data):
     d = data.reshape(1, 1, 181, 376, 1)
     return d[:, :, :, 8:368, 0:1]
+
 
 # --------------------------------
 # Step 1: Setup grid system
@@ -46,20 +52,14 @@ sph.use('xyz')
 sph.use('theta,phi,r')
 sph.use('thetaphir')
 
-if sph.mps_ready or sph.cuda_ready:
-    sph.set_device(0)
-else:
-    sph.set_device(-1)
 
-
-fx = sph.align(sph.xyz.x[0][:, :, :, :, 0:1])
-fy = sph.align(sph.xyz.y[1][:, :, :, :, 0:1])
-fz = sph.align(sph.xyz.z[2][:, :, :, :, 0:1])
 a = cast(2 * np.random.random([181, 360]) - 1)
 ux = cast(2 * np.random.random([181, 360]) - 1)
 uy = cast(2 * np.random.random([181, 360]) - 1)
+uz = cast(np.zeros([181, 360]))
 vx = cast(2 * np.random.random([181, 360]) - 1)
 vy = cast(2 * np.random.random([181, 360]) - 1)
+vz = cast(np.zeros([181, 360]))
 
 # ----------------------------------------------
 # Step 2: Define a machine learning model
@@ -68,37 +68,38 @@ vy = cast(2 * np.random.random([181, 360]) - 1)
 class BestFinder(L.LightningModule):
     def __init__(self):
         super().__init__()
-        self.a = th.nn.Parameter(a).to(th.device('mps'))
-        self.ux = th.nn.Parameter(ux).to(th.device('mps'))
-        self.uy = th.nn.Parameter(ux).to(th.device('mps'))
-        self.vx = th.nn.Parameter(vx).to(th.device('mps'))
-        self.vy = th.nn.Parameter(vy).to(th.device('mps'))
-        self.u = (self.ux * fx).to(th.device('mps')), (self.uy * fy).to(th.device('mps')), fz.to(th.device('mps'))
-        self.v = (self.vx * fx).to(th.device('mps')), (self.vy * fy).to(th.device('mps')), fz.to(th.device('mps'))
-        self.to(th.device('mps'))
+        self.a = th.nn.Parameter(a)
+        self.ux = th.nn.Parameter(ux)
+        self.uy = th.nn.Parameter(ux)
+        self.uz = th.nn.Parameter(uz)
+        self.vx = th.nn.Parameter(vx)
+        self.vy = th.nn.Parameter(vy)
+        self.vz = th.nn.Parameter(vz)
+        self.u = self.ux, self.uy, self.uz
+        self.v = self.vx, self.vy, self.vz
 
     def forward(self, x):
         ix, jx, dd, theta = x
-        ix = ix.flatten()[0].to(th.device('mps'))
-        jx = jx.flatten()[0].to(th.device('mps'))
-        dd = dd.flatten()[0].to(th.device('mps'))
-        theta = theta.float().flatten()[0].to(th.device('mps'))
+        ix = ix.flatten()[0]
+        jx = jx.flatten()[0]
+        dd = dd.flatten()[0]
+        theta = theta.float().flatten()[0]
 
-        a0 = (self.a[:, :, jx, ix, 0:1]).to(th.device('mps'))
-        u0 = (self.u[0][:, :, jx, ix, 0:1]).to(th.device('mps')), (self.u[1][:, :, jx, ix, 0:1]).to(th.device('mps')), (self.u[2][:, :, jx, ix, 0:1]).to(th.device('mps'))
-        v0 = (self.v[0][:, :, jx, ix, 0:1]).to(th.device('mps')), (self.v[1][:, :, jx, ix, 0:1]).to(th.device('mps')), (self.v[2][:, :, jx, ix, 0:1]).to(th.device('mps'))
-        ds = (2 * th.pi / 360 * dd).to(th.device('mps')) # dd degree distance
+        a0 = self.a[:, :, jx, ix, 0:1]
+        u0 = self.u[0][:, :, jx, ix, 0:1], self.u[1][:, :, jx, ix, 0:1], self.u[2][:, :, jx, ix, 0:1]
+        v0 = self.v[0][:, :, jx, ix, 0:1], self.v[1][:, :, jx, ix, 0:1], self.v[2][:, :, jx, ix, 0:1]
+        ds = 2 * th.pi / 360 * dd # dd degree distance
 
-        lat = (90 - jx).to(th.device('mps'))
-        lng = th.fmod(ix - 8, 360).to(th.device('mps'))
-        lambd = ((90 - lat) / 180 * th.pi).to(th.device('mps'))
-        theta = (th.atan2(u0[1], u0[0]) + theta).to(th.device('mps'))
-        eta = (th.acos(th.cos(ds) * th.cos(lambd) + th.sin(ds) * th.sin(lambd) * th.cos(theta))).to(th.device('mps'))
-        alpha = (th.atan2(2 * th.sin(lambd) * th.tan(theta / 2), th.tan(theta / 2) * th.tan(theta / 2) * th.sin(lambd + ds) + th.sin(lambd - ds))).to(th.device('mps'))
-        ix = th.fmod(8 + lng + alpha * 180 / th.pi, 360).long().flatten()[0].to(th.device('mps'))
-        jx = (eta * 180 / th.pi).long().flatten()[0].to(th.device('mps'))
-        aexp = (a0 + (th.cos(theta) + a0 * th.sin(theta)) * ds).to(th.device('mps'))
-        areal = (self.a.to(th.device('mps'))[:, :, jx, ix, 0:1]).to(th.device('mps'))
+        lat = 90 - jx
+        lng = th.fmod(ix - 8, 360)
+        lambd = (90 - lat) / 180 * th.pi
+        theta = th.atan2(u0[1], u0[0]) + theta
+        eta = th.acos(th.cos(ds) * th.cos(lambd) + th.sin(ds) * th.sin(lambd) * th.cos(theta))
+        alpha = th.atan2(2 * th.sin(lambd) * th.tan(theta / 2), th.tan(theta / 2) * th.tan(theta / 2) * th.sin(lambd + ds) + th.sin(lambd - ds))
+        ix = th.fmod(8 + lng + alpha * 180 / th.pi, 360).long().flatten()[0]
+        jx = (eta * 180 / th.pi).long().flatten()[0]
+        aexp = a0 + (th.cos(theta) + a0 * th.sin(theta)) * ds
+        areal = self.a.to(th.device('mps'))[:, :, jx, ix, 0:1]
 
         return u0, v0, aexp, areal
 
@@ -147,7 +148,7 @@ if __name__ == '__main__':
     import multiprocessing
     multiprocessing.freeze_support()
 
-    finder = BestFinder().to(th.device('mps'))
+    finder = BestFinder()
     trainer = L.Trainer()
     train_loader = th.utils.data.DataLoader(train, batch_size=1, num_workers=1)
     valid_loader = th.utils.data.DataLoader(valid, batch_size=1, num_workers=1)
