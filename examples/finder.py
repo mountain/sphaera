@@ -80,20 +80,14 @@ class BestFinder(L.LightningModule):
 
     def forward(self, x):
         ix, jx, dd, theta = x
-        ix = ix.flatten()[0]
-        jx = jx.flatten()[0]
         dd = dd.flatten()[0]
         theta = theta.float().flatten()[0]
-
-        a0 = self.a[:, :, jx, ix, 0:1]
-        u0 = self.u[0][:, :, jx, ix, 0:1], self.u[1][:, :, jx, ix, 0:1], self.u[2][:, :, jx, ix, 0:1]
-        v0 = self.v[0][:, :, jx, ix, 0:1], self.v[1][:, :, jx, ix, 0:1], self.v[2][:, :, jx, ix, 0:1]
         ds = 2 * th.pi / 360 * dd # dd degree distance
 
         lat = 90 - jx
         lng = th.fmod(ix - 8, 360)
         lambd = (90 - lat) / 180 * th.pi
-        theta = th.atan2(u0[1], u0[0]) + theta
+        theta = th.atan2(self.u[1], self.u[0]) + theta
         eta = th.acos(th.cos(ds) * th.cos(lambd) + th.sin(ds) * th.sin(lambd) * th.cos(theta))
         alpha = th.atan2(2 * th.sin(lambd) * th.tan(theta / 2), th.tan(theta / 2) * th.tan(theta / 2) * th.sin(lambd + ds) + th.sin(lambd - ds))
         ix = th.fmod(8 + lng + alpha * 180 / th.pi, 360).long().flatten()[0]
@@ -132,7 +126,8 @@ class BestFinder(L.LightningModule):
 
 class RandomPathDataset(D.dataset.Dataset):
     def __getitem__(self, index):
-        return random.sample(range(376), 1)[0], random.sample(range(181), 1)[0], random.sample(range(2, 10), 1)[0], random.random() * np.pi * 2
+        xx, yy = np.meshgrid(np.arange(367), np.arange(181))
+        return xx, yy, np.random.random([367, 181]) * 10, np.random.random([367, 181]) * np.pi * 2
 
     def __len__(self):
         return 376 * 181 * 4
