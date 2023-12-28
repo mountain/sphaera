@@ -87,7 +87,7 @@ class BestFinder(L.LightningModule):
         a0 = self.a[:, :, jx, ix, 0:1]
         u0 = self.u[0][:, :, jx, ix, 0:1], self.u[1][:, :, jx, ix, 0:1], self.u[2][:, :, jx, ix, 0:1]
         v0 = self.v[0][:, :, jx, ix, 0:1], self.v[1][:, :, jx, ix, 0:1], self.v[2][:, :, jx, ix, 0:1]
-        ds = 2 * th.pi / 360 * dd # dd degree distance
+        ds = (2 * th.pi / 360 * dd).to(th.device('mps')) # dd degree distance
 
         lat = 90 - jx
         lng = th.fmod(ix - 8, 360)
