@@ -79,10 +79,10 @@ class BestFinder(L.LightningModule):
 
     def forward(self, x):
         ix, jx, dd, theta = x
-        ix = ix[0]
-        jx = jx[0]
-        dd = dd[0]
-        theta = theta.float()[0].to(th.device('mps'))
+        ix = ix.flatten()[0]
+        jx = jx.flatten()[0]
+        dd = dd.flatten()[0]
+        theta = theta.float().flatten()[0].to(th.device('mps'))
 
         a0 = (self.a[:, :, jx, ix, 0:1]).to(th.device('mps'))
         u0 = (self.u[0][:, :, jx, ix, 0:1]).to(th.device('mps')), (self.u[1][:, :, jx, ix, 0:1]).to(th.device('mps')), (self.u[2][:, :, jx, ix, 0:1]).to(th.device('mps'))
