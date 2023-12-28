@@ -150,8 +150,8 @@ finder = BestFinder()
 trainer = L.Trainer()
 train_loader = th.utils.data.DataLoader(train, batch_size=128, num_workers=7)
 valid_loader = th.utils.data.DataLoader(valid, batch_size=1)
-next(train_loader)
-next(valid_loader)
+next(train_loader.dataset)
+next(valid_loader.dataset)
 
 trainer.fit(finder, train_loader, valid_loader)
 
