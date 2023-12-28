@@ -73,8 +73,8 @@ class BestFinder(L.LightningModule):
         self.uy = th.nn.Parameter(ux).to(th.device('mps'))
         self.vx = th.nn.Parameter(vx).to(th.device('mps'))
         self.vy = th.nn.Parameter(vy).to(th.device('mps'))
-        self.u = (self.ux * fx, self.uy * fy, fz)
-        self.v = (self.vx * fx, self.vy * fy, fz)
+        self.u = self.ux * fx, self.uy * fy, fz.to(th.device('mps'))
+        self.v = self.vx * fx, self.vy * fy, fz.to(th.device('mps'))
 
     def forward(self, x):
         ix, jx, dd, theta = x
