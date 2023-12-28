@@ -85,8 +85,8 @@ class BestFinder(L.LightningModule):
         theta = theta.float().to(th.device('mps'))
 
         a0 = (self.a[:, :, jx, ix, 0:1]).to(th.device('mps'))
-        u0 = self.u[0][:, :, jx, ix, 0:1], self.u[1][:, :, jx, ix, 0:1], self.u[2][:, :, jx, ix, 0:1]
-        v0 = self.v[0][:, :, jx, ix, 0:1], self.v[1][:, :, jx, ix, 0:1], self.v[2][:, :, jx, ix, 0:1]
+        u0 = (self.u[0][:, :, jx, ix, 0:1]).to(th.device('mps')), (self.u[1][:, :, jx, ix, 0:1]).to(th.device('mps')), (self.u[2][:, :, jx, ix, 0:1]).to(th.device('mps'))
+        v0 = (self.v[0][:, :, jx, ix, 0:1]).to(th.device('mps')), (self.v[1][:, :, jx, ix, 0:1]).to(th.device('mps')), (self.v[2][:, :, jx, ix, 0:1]).to(th.device('mps'))
         ds = (2 * th.pi / 360 * dd).to(th.device('mps')) # dd degree distance
 
         lat = (90 - jx).to(th.device('mps'))
@@ -97,9 +97,9 @@ class BestFinder(L.LightningModule):
         alpha = th.atan2(2 * th.sin(lambd) * th.tan(theta / 2), th.tan(theta / 2) * th.tan(theta / 2) * th.sin(lambd + ds) + th.sin(lambd - ds))
         ix = th.fmod(8 + lng + alpha * 180 / th.pi, 360).long()
         jx = (eta * 180 / th.pi).long()
-        a = (self.a.to(th.device('mps'))[:, :, jx, ix, 0:1]).to(th.device('mps'))
+        ax = (self.a.to(th.device('mps'))[:, :, jx, ix, 0:1]).to(th.device('mps'))
 
-        return u0, v0, a0 + (th.cos(theta) + a0 * th.sin(theta)) * ds, a
+        return u0, v0, a0 + (th.cos(theta) + a0 * th.sin(theta)) * ds, ax
 
     def training_step(self, batch, batch_idx):
         paths = batch
