@@ -147,7 +147,7 @@ if __name__ == '__main__':
     import multiprocessing
     multiprocessing.freeze_support()
 
-    finder = BestFinder()
+    finder = BestFinder().to(th.device('mps'))
     trainer = L.Trainer()
     train_loader = th.utils.data.DataLoader(train, batch_size=1, num_workers=1)
     valid_loader = th.utils.data.DataLoader(valid, batch_size=1, num_workers=1)
