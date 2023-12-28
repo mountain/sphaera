@@ -79,10 +79,10 @@ class BestFinder(L.LightningModule):
 
     def forward(self, x):
         ix, jx, dd, theta = x
-        ix = ix
-        jx = jx
-        dd = dd
-        theta = theta.float().to(th.device('mps'))
+        ix = ix[0]
+        jx = jx[0]
+        dd = dd[0]
+        theta = theta.float()[0].to(th.device('mps'))
 
         a0 = (self.a[:, :, jx, ix, 0:1]).to(th.device('mps'))
         u0 = (self.u[0][:, :, jx, ix, 0:1]).to(th.device('mps')), (self.u[1][:, :, jx, ix, 0:1]).to(th.device('mps')), (self.u[2][:, :, jx, ix, 0:1]).to(th.device('mps'))
@@ -95,8 +95,8 @@ class BestFinder(L.LightningModule):
         theta = (th.atan2(u0[1], u0[0]) + theta).to(th.device('mps'))
         eta = (th.acos(th.cos(ds) * th.cos(lambd) + th.sin(ds) * th.sin(lambd) * th.cos(theta))).to(th.device('mps'))
         alpha = (th.atan2(2 * th.sin(lambd) * th.tan(theta / 2), th.tan(theta / 2) * th.tan(theta / 2) * th.sin(lambd + ds) + th.sin(lambd - ds))).to(th.device('mps'))
-        ix = th.fmod(8 + lng + alpha * 180 / th.pi, 360).long()[0]
-        jx = (eta * 180 / th.pi).long()[0]
+        ix = th.fmod(8 + lng + alpha * 180 / th.pi, 360).long()
+        jx = (eta * 180 / th.pi).long()
         aexp = (a0 + (th.cos(theta) + a0 * th.sin(theta)) * ds).to(th.device('mps'))
         areal = (self.a.to(th.device('mps'))[:, :, jx, ix, 0:1]).to(th.device('mps'))
 
