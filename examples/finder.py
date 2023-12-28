@@ -95,10 +95,10 @@ class BestFinder(L.LightningModule):
         theta = (th.atan2(u0[1], u0[0]) + theta).to(th.device('mps'))
         eta = (th.acos(th.cos(ds) * th.cos(lambd) + th.sin(ds) * th.sin(lambd) * th.cos(theta))).to(th.device('mps'))
         alpha = (th.atan2(2 * th.sin(lambd) * th.tan(theta / 2), th.tan(theta / 2) * th.tan(theta / 2) * th.sin(lambd + ds) + th.sin(lambd - ds))).to(th.device('mps'))
-        ix = th.fmod(8 + lng + alpha * 180 / th.pi, 360).long()
-        jx = (eta * 180 / th.pi).long()
+        ix = th.fmod(8 + lng + alpha * 180 / th.pi, 360).long()[0]
+        jx = (eta * 180 / th.pi).long()[0]
         aexp = (a0 + (th.cos(theta) + a0 * th.sin(theta)) * ds).to(th.device('mps'))
-        areal = (self.a.to(th.device('mps'))[:, :, jx, ix, 0:1]).to(th.device('mps'))[0, 0, :, :, :, 0]
+        areal = (self.a.to(th.device('mps'))[:, :, jx, ix, 0:1]).to(th.device('mps'))
 
         return u0, v0, aexp, areal
 
