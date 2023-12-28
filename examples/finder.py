@@ -142,20 +142,20 @@ train, valid = th.utils.data.random_split(dataset, [376 * 181 * 3, 376 * 181])
 # -------------------
 # Step 3: Train
 # -------------------
-import multiprocessing
+if __name__ == '__main__':
+    import multiprocessing
+    multiprocessing.freeze_support()
 
-multiprocessing.freeze_support()
+    finder = BestFinder()
+    trainer = L.Trainer()
+    train_loader = th.utils.data.DataLoader(train, batch_size=128, num_workers=7)
+    valid_loader = th.utils.data.DataLoader(valid, batch_size=1, num_workers=7)
 
-finder = BestFinder()
-trainer = L.Trainer()
-train_loader = th.utils.data.DataLoader(train, batch_size=128, num_workers=7)
-valid_loader = th.utils.data.DataLoader(valid, batch_size=1, num_workers=7)
+    trainer.fit(finder, train_loader, valid_loader)
 
-trainer.fit(finder, train_loader, valid_loader)
-
-th.save(finder.a, 'a.dat')
-th.save(finder.ux, 'ux.dat')
-th.save(finder.uy, 'uy.dat')
-th.save(finder.vx, 'vx.dat')
-th.save(finder.vy, 'vy.dat')
+    th.save(finder.a, 'a.dat')
+    th.save(finder.ux, 'ux.dat')
+    th.save(finder.uy, 'uy.dat')
+    th.save(finder.vx, 'vx.dat')
+    th.save(finder.vy, 'vy.dat')
 
