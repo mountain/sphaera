@@ -148,8 +148,8 @@ if __name__ == '__main__':
 
     finder = BestFinder()
     trainer = L.Trainer()
-    train_loader = th.utils.data.DataLoader(train, batch_size=128, num_workers=7)
-    valid_loader = th.utils.data.DataLoader(valid, batch_size=1, num_workers=7)
+    train_loader = th.utils.data.DataLoader(train, batch_size=128, num_workers=1)
+    valid_loader = th.utils.data.DataLoader(valid, batch_size=128, num_workers=1)
 
     trainer.fit(finder, train_loader, valid_loader)
 
