@@ -98,7 +98,7 @@ class BestFinder(L.LightningModule):
         ix = th.fmod(8 + lng + alpha * 180 / th.pi, 360).long()
         jx = (eta * 180 / th.pi).long()
 
-        return u0, v0, a0 + (th.cos(theta) + a0 * th.sin(theta)) * ds, self.a.to(th.device('mps')[:, :, jx, ix, 0:1])
+        return u0, v0, a0 + (th.cos(theta) + a0 * th.sin(theta)) * ds, self.a.to(th.device('mps'))[:, :, jx, ix, 0:1]
 
     def training_step(self, batch, batch_idx):
         paths = batch
