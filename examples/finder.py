@@ -27,13 +27,13 @@ else:
 
 
 def cast(data):
-    d = np.array(data, dtype=np.float32).reshape(181, 360)
-    return sph.cast(np.concatenate((d[:, 359:351:-1], d, d[:, 0:8:1]), axis=1), device=0).reshape(1, 1, 181, 376)
+    d = np.array(data, dtype=np.float64).reshape(721, 1440)
+    return sph.cast(np.concatenate((d[:, 1439:1407:-1], d, d[:, 0:32:1]), axis=1), device=0).reshape(1, 1, 721, 1504, 1)
 
 
 def strip(data):
-    d = data.reshape(1, 1, 181, 376)
-    return d[:, :, :, 8:368]
+    d = data.reshape(1, 1, 721, 1504, 1)
+    return d[:, :, :, 32:1472, 0:1]
 
 
 # --------------------------------
@@ -42,8 +42,8 @@ def strip(data):
 
 sph.bind(RegularGrid(
     basis='lng,lat,alt',
-    W=376, L=181, H=2,
-    east=0 - 1 * 8, west=360 + 1 * 8,
+    W=1504, L=721, H=2,
+    east=0 - 0.25 * 32, west=360 + 0.25 * 32,
     north=-89.999, south=89.999,
     upper=0.99, lower=1.01
 ))
@@ -53,13 +53,13 @@ sph.use('theta,phi,r')
 sph.use('thetaphir')
 
 
-a = cast(2 * np.random.random([181, 360]) - 1)
-ux = cast(2 * np.random.random([181, 360]) - 1)
-uy = cast(2 * np.random.random([181, 360]) - 1)
-uz = cast(np.zeros([181, 360]))
-vx = cast(2 * np.random.random([181, 360]) - 1)
-vy = cast(2 * np.random.random([181, 360]) - 1)
-vz = cast(np.zeros([181, 360]))
+a = cast(2 * np.random.random([721, 1440]) - 1)
+ux = cast(2 * np.random.random([721, 1440]) - 1)
+uy = cast(2 * np.random.random([721, 1440]) - 1)
+uz = cast(np.zeros([721, 1440]))
+vx = cast(2 * np.random.random([721, 1440]) - 1)
+vy = cast(2 * np.random.random([721, 1440]) - 1)
+vz = cast(np.zeros([721, 1440]))
 
 # ----------------------------------------------
 # Step 2: Define a machine learning model
@@ -84,8 +84,8 @@ class BestFinder(L.LightningModule):
         ds = (2 * th.pi / 360 * dd).float() # dd degree distance
         aexp = self.a + (th.cos(theta) + self.a * th.sin(theta)) * ds
 
-        lat = th.reshape(90 - jx, [1, 1, 181, 1])
-        lng = th.reshape(th.fmod(ix - 8, 360), [1, 1, 1, 376])
+        lat = th.reshape(90 - jx, [1, 1, 721, 1])
+        lng = th.reshape(th.fmod(ix - 8, 360), [1, 1, 1, 1504])
         lambd = ((90 - lat) / 180 * th.pi).float()
         theta = th.atan2(self.u[1], self.u[0]) + theta
         eta = th.acos(th.cos(ds) * th.cos(lambd) + th.sin(ds) * th.sin(lambd) * th.cos(theta))
@@ -127,8 +127,8 @@ class BestFinder(L.LightningModule):
 
 class RandomPathDataset(D.dataset.Dataset):
     def __getitem__(self, index):
-        xx, yy = np.arange(376), np.arange(181)
-        return xx, yy, np.random.random([181, 376]) * 10, np.random.random([181, 376]) * np.pi * 2
+        xx, yy = np.arange(1504), np.arange(721)
+        return xx, yy, np.random.random([721, 1504]) * 3, np.random.random([721, 1504]) * np.pi * 2
 
     def __len__(self):
         return 10000
@@ -146,7 +146,7 @@ if __name__ == '__main__':
 
     finder = BestFinder()
     trainer = L.Trainer(max_epochs=5)
-    train_loader = th.utils.data.DataLoader(train, batch_size=1, num_workers=1)
+    train_loader = th.utils.data.DataLoader(train, batch_size=1, num_workers=1, persistent_workers=True)
     valid_loader = th.utils.data.DataLoader(valid, batch_size=1, num_workers=1)
 
     trainer.fit(finder, train_loader, valid_loader)
