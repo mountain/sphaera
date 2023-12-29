@@ -101,11 +101,12 @@ class BestFinder(L.LightningModule):
         a1 = self.a[:, :, th.floor(yy).long(), th.ceil(xx).long()]
         a2 = self.a[:, :, th.ceil(yy).long(), th.floor(xx).long()]
         a3 = self.a[:, :, th.ceil(yy).long(), th.ceil(xx).long()]
-        a4 = th.lerp(a0, a1, th.ceil(xx) - th.floor(xx))
-        a5 = th.lerp(a2, a3, th.ceil(xx) - th.floor(xx))
-        a6 = th.lerp(a4, a5, th.ceil(yy) - th.floor(yy))
+        w0 = (th.ceil(yy) - yy) * (th.ceil(xx) - xx)
+        w1 = (th.ceil(yy) - yy) * (xx - th.floor(xx))
+        w2 = (yy - th.floor(yy)) * (th.ceil(xx) - xx)
+        w3 = (yy - th.floor(yy)) * (xx - th.floor(xx))
 
-        return self.u, self.v, self.a, aexp, a6
+        return self.u, self.v, self.a, aexp, w0 * a0 + w1 * a1 + w2 * a2 + w3 * a3
 
     def training_step(self, batch, batch_idx):
         paths = batch
