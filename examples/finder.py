@@ -99,11 +99,11 @@ class BestFinder(L.LightningModule):
         jx = (eta * 180 / th.pi).long()[0, 0]
         areal = self.a[:, :, jx, ix]
 
-        return self.u, self.v, aexp, areal
+        return self.u, self.v, self.a, aexp, areal
 
     def training_step(self, batch, batch_idx):
         paths = batch
-        u, v, a_exp, a_real = self.forward(paths)
+        u, v, a, a_exp, a_real = self.forward(paths)
         dot_ulen = dot(u, u)
         dot_vlen = dot(v, v)
         dot_orth = dot(u, v)
@@ -115,7 +115,9 @@ class BestFinder(L.LightningModule):
         uz_loss = F.mse_loss(uz, th.zeros_like(uz))
         vz_loss = F.mse_loss(vz, th.zeros_like(vz))
         asgn_loss = F.mse_loss(a_real, a_exp)
-        loss = ulen_loss + vlen_loss + orth_loss + asgn_loss + uz_loss + vz_loss
+        lapl_loss = F.mse_loss(a * 2, sph.laplacian(a))
+        loss = ulen_loss + vlen_loss + orth_loss + asgn_loss + uz_loss + vz_loss + lapl_loss
+        self.log("lapl_loss", lapl_loss, prog_bar=True, logger=True)
         self.log("asgn_loss", asgn_loss, prog_bar=True, logger=True)
         self.log("train_loss", loss, prog_bar=True, logger=True)
         return loss
