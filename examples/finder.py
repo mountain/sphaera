@@ -28,12 +28,12 @@ else:
 
 def cast(data):
     d = np.array(data, dtype=np.float64).reshape(721, 1440)
-    return sph.cast(np.concatenate((d[:, 1439:1407:-1], d, d[:, 0:32:1]), axis=1), device=0).reshape(1, 1, 721, 1504, 1)
+    return sph.cast(np.concatenate((d[:, 1439:1407:-1], d, d[:, 0:32:1]), axis=1), device=0).reshape(1, 1, 721, 1504)
 
 
 def strip(data):
-    d = data.reshape(1, 1, 721, 1504, 1)
-    return d[:, :, :, 32:1472, 0:1]
+    d = data.reshape(1, 1, 721, 1504)
+    return d[:, :, :, 32:1472]
 
 
 # --------------------------------
