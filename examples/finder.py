@@ -146,7 +146,7 @@ if __name__ == '__main__':
     multiprocessing.freeze_support()
 
     finder = BestFinder()
-    trainer = L.Trainer(max_epochs=5)
+    trainer = L.Trainer(max_epochs=1)
     train_loader = th.utils.data.DataLoader(train, batch_size=1, num_workers=1, persistent_workers=True)
     valid_loader = th.utils.data.DataLoader(valid, batch_size=1, num_workers=1)
 
