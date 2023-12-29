@@ -27,6 +27,12 @@ with th.no_grad():
     sph.use('theta,phi,r')
     sph.use('thetaphir')
 
+    ux = th.load('examples/ux.dat')
+    plot_scalar('ux', strip(ux))
+
+    uy = th.load('examples/uy.dat')
+    plot_scalar('uy', strip(uy))
+
     a = th.load('examples/a.dat')
     a = th.reshape(a, [1, 1, 721, 1504, -1])
     a = th.concatenate([a, a], dim=-1).double()

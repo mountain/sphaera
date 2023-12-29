@@ -80,13 +80,16 @@ class BestFinder(L.LightningModule):
 
     def forward(self, x):
         ix, jx, dd, theta = x
-        dd =  th.reshape(dd, [1, 1, 721, 1504])
+        ix, jx = th.meshgrid(ix, jx)
+        ix = th.reshape(ix, [1, 1, 721, 1504])
+        jx = th.reshape(jx, [1, 1, 721, 1504])
+        dd = th.reshape(dd, [1, 1, 721, 1504])
         theta = th.reshape(theta.float(), [1, 1, 721, 1504])
-        ds = (2 * th.pi / 360 * dd).float() # dd degree distance
+        ds = (th.pi / 180 * dd).float() # dd degree distance
         aexp = self.a + (th.cos(theta) - self.a * th.sin(theta)) * ds
 
-        lat = th.reshape(90 - jx, [1, 1, 721, 1])
-        lng = th.reshape(th.fmod(ix - 8, 360), [1, 1, 1, 1504])
+        lat = 90 - jx
+        lng = th.fmod(ix - 8, 360)
         lambd = ((90 - lat) / 180 * th.pi).float()
         theta = th.atan2(self.u[1], self.u[0]) + theta
         eta = th.acos(th.cos(ds) * th.cos(lambd) + th.sin(ds) * th.sin(lambd) * th.cos(theta))
