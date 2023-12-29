@@ -28,12 +28,12 @@ else:
 
 def cast(data):
     d = np.array(data, dtype=np.float32).reshape(181, 360)
-    return sph.cast(np.concatenate((d[:, 359:351:-1], d, d[:, 0:8:1]), axis=1), device=0).reshape(1, 1, 181, 376, 1)
+    return sph.cast(np.concatenate((d[:, 359:351:-1], d, d[:, 0:8:1]), axis=1), device=0).reshape(1, 1, 181, 376)
 
 
 def strip(data):
-    d = data.reshape(1, 1, 181, 376, 1)
-    return d[:, :, :, 8:368, 0:1]
+    d = data.reshape(1, 1, 181, 376)
+    return d[:, :, :, 8:368]
 
 
 # --------------------------------
@@ -84,8 +84,8 @@ class BestFinder(L.LightningModule):
         ds = 2 * th.pi / 360 * dd # dd degree distance
         aexp = self.a + (th.cos(theta) + self.a * th.sin(theta)) * ds
 
-        lat = th.reshape(90 - jx, [1, 1, 181, 1, 1])
-        lng = th.reshape(th.fmod(ix - 8, 360), [1, 1, 1, 376, 1])
+        lat = th.reshape(90 - jx, [1, 1, 181, 1])
+        lng = th.reshape(th.fmod(ix - 8, 360), [1, 1, 1, 376])
         lambd = (90 - lat) / 180 * th.pi
         theta = th.atan2(self.u[1], self.u[0]) + theta
         eta = th.acos(th.cos(ds) * th.cos(lambd) + th.sin(ds) * th.sin(lambd) * th.cos(theta))
@@ -93,7 +93,7 @@ class BestFinder(L.LightningModule):
 
         ix = th.fmod(8 + lng + alpha * 180 / th.pi, 360).long()
         jx = (eta * 180 / th.pi).long()
-        areal = self.a[:, :, jx, ix, :]
+        areal = self.a[:, :, jx, ix]
 
         return self.u, self.v, aexp, areal
 
@@ -127,7 +127,7 @@ class BestFinder(L.LightningModule):
 class RandomPathDataset(D.dataset.Dataset):
     def __getitem__(self, index):
         xx, yy = np.arange(376), np.arange(181)
-        return xx, yy, np.random.random([376, 181]) * 10, np.random.random([376, 181]) * np.pi * 2
+        return xx, yy, np.random.random([181, 376]) * 10, np.random.random([181, 376]) * np.pi * 2
 
     def __len__(self):
         return 376 * 181 * 4
