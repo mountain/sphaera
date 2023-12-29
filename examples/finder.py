@@ -80,7 +80,7 @@ class BestFinder(L.LightningModule):
 
     def forward(self, x):
         ix, jx, dd, theta = x
-        ix, jx = th.meshgrid(ix, jx)
+        ix, jx = th.meshgrid(ix.flatten(), jx.flatten())
         ix = th.reshape(ix, [1, 1, 721, 1504])
         jx = th.reshape(jx, [1, 1, 721, 1504])
         dd = th.reshape(dd, [1, 1, 721, 1504])
