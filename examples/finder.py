@@ -115,7 +115,7 @@ class BestFinder(L.LightningModule):
         uz_loss = F.mse_loss(uz, th.zeros_like(uz))
         vz_loss = F.mse_loss(vz, th.zeros_like(vz))
         asgn_loss = F.mse_loss(a_real, a_exp)
-        lapl_loss = F.mse_loss(a * 2, sph.laplacian(a))
+        lapl_loss = F.mse_loss(th.reshape(a * 2, [1, 1, 721, 1504, 1]), sph.laplacian(th.reshape(a, [1, 1, 721, 1504, 1])))
         loss = ulen_loss + vlen_loss + orth_loss + asgn_loss + uz_loss + vz_loss + lapl_loss
         self.log("lapl_loss", lapl_loss, prog_bar=True, logger=True)
         self.log("asgn_loss", asgn_loss, prog_bar=True, logger=True)
