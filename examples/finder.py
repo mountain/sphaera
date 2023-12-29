@@ -83,7 +83,7 @@ class BestFinder(L.LightningModule):
         dd =  th.reshape(dd, [1, 1, 721, 1504])
         theta = th.reshape(theta.float(), [1, 1, 721, 1504])
         ds = (2 * th.pi / 360 * dd).float() # dd degree distance
-        aexp = self.a + (2 * th.cos(theta) + self.a / 2 * th.sin(theta)) * ds
+        aexp = self.a + (th.cos(theta) - self.a * th.sin(theta)) * ds
 
         lat = th.reshape(90 - jx, [1, 1, 721, 1])
         lng = th.reshape(th.fmod(ix - 8, 360), [1, 1, 1, 1504])
