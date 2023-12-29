@@ -80,13 +80,12 @@ class BestFinder(L.LightningModule):
 
     def forward(self, x):
         ix, jx, dd, theta = x
-        dd = dd
         theta = theta.float()
         ds = 2 * th.pi / 360 * dd # dd degree distance
         aexp = self.a + (th.cos(theta) + self.a * th.sin(theta)) * ds
 
-        lat = 90 - jx
-        lng = th.fmod(ix - 8, 360)
+        lat = th.reshape(90 - jx, [1, 1, 181, 1, 1])
+        lng = th.reshape(th.fmod(ix - 8, 360), [1, 1, 1, 376, 1])
         lambd = (90 - lat) / 180 * th.pi
         theta = th.atan2(self.u[1], self.u[0]) + theta
         eta = th.acos(th.cos(ds) * th.cos(lambd) + th.sin(ds) * th.sin(lambd) * th.cos(theta))
@@ -127,7 +126,7 @@ class BestFinder(L.LightningModule):
 
 class RandomPathDataset(D.dataset.Dataset):
     def __getitem__(self, index):
-        xx, yy = np.meshgrid(np.arange(376), np.arange(181))
+        xx, yy = np.arange(376), np.arange(181)
         return xx, yy, np.random.random([376, 181]) * 10, np.random.random([376, 181]) * np.pi * 2
 
     def __len__(self):
