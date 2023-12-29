@@ -103,8 +103,8 @@ class BestFinder(L.LightningModule):
         dot_ulen = dot(u, u)
         dot_vlen = dot(v, v)
         dot_orth = dot(u, v)
-        uz = u[3] * u[3]
-        vz = v[3] * v[3]
+        uz = u[2] * u[2]
+        vz = v[2] * v[2]
         ulen_loss = F.mse_loss(dot_ulen, th.ones_like(dot_ulen))
         vlen_loss = F.mse_loss(dot_vlen, th.ones_like(dot_vlen))
         orth_loss = F.mse_loss(dot_orth, th.zeros_like(dot_orth))
