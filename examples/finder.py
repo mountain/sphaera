@@ -95,11 +95,17 @@ class BestFinder(L.LightningModule):
         eta = th.acos(th.cos(ds) * th.cos(lambd) + th.sin(ds) * th.sin(lambd) * th.cos(theta))
         alpha = th.atan2(2 * th.sin(lambd) * th.tan(theta / 2), th.tan(theta / 2) * th.tan(theta / 2) * th.sin(lambd + ds) + th.sin(lambd - ds))
 
-        ix = th.fmod(8 + lng + alpha * 180 / th.pi, 360).long()[0, 0]
-        jx = (eta * 180 / th.pi).long()[0, 0]
-        areal = self.a[:, :, jx, ix]
+        xx = th.fmod(8 + lng + alpha * 180 / th.pi, 360)[0, 0]
+        yy = (eta * 180 / th.pi)[0, 0]
+        a0 = self.a[:, :, th.floor(yy).long(), th.floor(xx).long()]
+        a1 = self.a[:, :, th.floor(yy).long(), th.ceil(xx).long()]
+        a2 = self.a[:, :, th.ceil(yy).long(), th.floor(xx).long()]
+        a3 = self.a[:, :, th.ceil(yy).long(), th.ceil(xx).long()]
+        a4 = th.lerp(a0, a1, th.ceil(xx) - th.floor(xx))
+        a5 = th.lerp(a2, a3, th.ceil(xx) - th.floor(xx))
+        a6 = th.lerp(a4, a5, th.ceil(yy) - th.floor(yy))
 
-        return self.u, self.v, self.a, aexp, areal
+        return self.u, self.v, self.a, aexp, a6
 
     def training_step(self, batch, batch_idx):
         paths = batch
