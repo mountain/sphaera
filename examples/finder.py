@@ -80,9 +80,10 @@ class BestFinder(L.LightningModule):
 
     def forward(self, x):
         ix, jx, dd, theta = x
-        dd = dd.flatten()[0]
-        theta = theta.float().flatten()[0]
+        dd = dd
+        theta = theta.float()
         ds = 2 * th.pi / 360 * dd # dd degree distance
+        aexp = self.a + (th.cos(theta) + self.a * th.sin(theta)) * ds
 
         lat = 90 - jx
         lng = th.fmod(ix - 8, 360)
@@ -90,19 +91,19 @@ class BestFinder(L.LightningModule):
         theta = th.atan2(self.u[1], self.u[0]) + theta
         eta = th.acos(th.cos(ds) * th.cos(lambd) + th.sin(ds) * th.sin(lambd) * th.cos(theta))
         alpha = th.atan2(2 * th.sin(lambd) * th.tan(theta / 2), th.tan(theta / 2) * th.tan(theta / 2) * th.sin(lambd + ds) + th.sin(lambd - ds))
-        ix = th.fmod(8 + lng + alpha * 180 / th.pi, 360).long().flatten()[0]
-        jx = (eta * 180 / th.pi).long().flatten()[0]
-        aexp = a0 + (th.cos(theta) + a0 * th.sin(theta)) * ds
-        areal = self.a[:, :, jx, ix, 0:1]
 
-        return u0, v0, aexp, areal
+        ix = th.fmod(8 + lng + alpha * 180 / th.pi, 360).long()
+        jx = (eta * 180 / th.pi).long()
+        areal = self.a[:, :, jx, ix, :]
+
+        return self.u, self.v, aexp, areal
 
     def training_step(self, batch, batch_idx):
         paths = batch
-        u0, v0, a_exp, a_real = self.forward(paths)
-        dot_ulen = dot(u0, u0)
-        dot_vlen = dot(v0, v0)
-        dot_orth = dot(u0, v0)
+        u, v, a_exp, a_real = self.forward(paths)
+        dot_ulen = dot(u, u)
+        dot_vlen = dot(v, v)
+        dot_orth = dot(u, v)
         ulen_loss = F.mse_loss(dot_ulen, th.ones_like(dot_ulen))
         vlen_loss = F.mse_loss(dot_vlen, th.ones_like(dot_vlen))
         orth_loss = F.mse_loss(dot_orth, th.zeros_like(dot_orth))
