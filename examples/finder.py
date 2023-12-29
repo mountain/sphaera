@@ -127,8 +127,8 @@ class BestFinder(L.LightningModule):
 
 class RandomPathDataset(D.dataset.Dataset):
     def __getitem__(self, index):
-        xx, yy = np.meshgrid(np.arange(367), np.arange(181))
-        return xx, yy, np.random.random([367, 181]) * 10, np.random.random([367, 181]) * np.pi * 2
+        xx, yy = np.meshgrid(np.arange(376), np.arange(181))
+        return xx, yy, np.random.random([376, 181]) * 10, np.random.random([376, 181]) * np.pi * 2
 
     def __len__(self):
         return 376 * 181 * 4
