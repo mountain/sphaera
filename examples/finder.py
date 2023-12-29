@@ -53,12 +53,12 @@ sph.use('theta,phi,r')
 sph.use('thetaphir')
 
 
-a = cast(2 * np.random.random([721, 1440]) - 1)
-ux = cast(2 * np.random.random([721, 1440]) - 1)
-uy = cast(2 * np.random.random([721, 1440]) - 1)
+a = cast(np.ones([721, 1440]))
+ux = cast(np.ones([721, 1440]))
+uy = cast(np.zeros([721, 1440]))
 uz = cast(np.zeros([721, 1440]))
-vx = cast(2 * np.random.random([721, 1440]) - 1)
-vy = cast(2 * np.random.random([721, 1440]) - 1)
+vx = cast(np.zeros([721, 1440]))
+vy = cast(np.ones([721, 1440]))
 vz = cast(np.zeros([721, 1440]))
 
 # ----------------------------------------------
