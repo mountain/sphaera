@@ -130,11 +130,11 @@ class RandomPathDataset(D.dataset.Dataset):
         return xx, yy, np.random.random([181, 376]) * 10, np.random.random([181, 376]) * np.pi * 2
 
     def __len__(self):
-        return 376 * 181 * 4
+        return 10000
 
 
 dataset = RandomPathDataset()
-train, valid = th.utils.data.random_split(dataset, [376 * 181 * 3, 376 * 181])
+train, valid = th.utils.data.random_split(dataset, [9000, 1000])
 
 # -------------------
 # Step 3: Train
