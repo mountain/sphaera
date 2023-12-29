@@ -103,14 +103,15 @@ class BestFinder(L.LightningModule):
         dot_ulen = dot(u, u)
         dot_vlen = dot(v, v)
         dot_orth = dot(u, v)
+        uz = u[3] * u[3]
+        vz = v[3] * v[3]
         ulen_loss = F.mse_loss(dot_ulen, th.ones_like(dot_ulen))
         vlen_loss = F.mse_loss(dot_vlen, th.ones_like(dot_vlen))
         orth_loss = F.mse_loss(dot_orth, th.zeros_like(dot_orth))
+        uz_loss = F.mse_loss(uz, th.zeros_like(uz))
+        vz_loss = F.mse_loss(vz, th.zeros_like(vz))
         asgn_loss = F.mse_loss(a_real, a_exp)
-        loss = ulen_loss + vlen_loss + orth_loss + asgn_loss
-        self.log("ulen_loss", ulen_loss, prog_bar=True, logger=True)
-        self.log("vlen_loss", vlen_loss, prog_bar=True, logger=True)
-        self.log("orth_loss", orth_loss, prog_bar=True, logger=True)
+        loss = ulen_loss + vlen_loss + orth_loss + asgn_loss + uz_loss + vz_loss
         self.log("asgn_loss", asgn_loss, prog_bar=True, logger=True)
         self.log("train_loss", loss, prog_bar=True, logger=True)
         return loss
@@ -144,7 +145,7 @@ if __name__ == '__main__':
     multiprocessing.freeze_support()
 
     finder = BestFinder()
-    trainer = L.Trainer()
+    trainer = L.Trainer(max_epochs=5)
     train_loader = th.utils.data.DataLoader(train, batch_size=1, num_workers=1)
     valid_loader = th.utils.data.DataLoader(valid, batch_size=1, num_workers=1)
 
