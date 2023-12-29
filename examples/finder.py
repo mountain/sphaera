@@ -80,7 +80,8 @@ class BestFinder(L.LightningModule):
 
     def forward(self, x):
         ix, jx, dd, theta = x
-        theta = theta.float()
+        dd =  th.reshape(dd, [1, 1, 721, 1504])
+        theta = th.reshape(theta.float(), [1, 1, 721, 1504])
         ds = (2 * th.pi / 360 * dd).float() # dd degree distance
         aexp = self.a + (th.cos(theta) + self.a * th.sin(theta)) * ds
 
